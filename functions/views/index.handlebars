@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Welcome to Firebase Hosting</title>
+        <link rel="stylesheet" type="text/css" href="styles/index.css"/>
+        <link rel="stylesheet" type="text/css" href="styles/overlay.css"/>
+        <script src="/__/firebase/7.2.1/firebase-app.js"></script>
+        <script src="/__/firebase/7.2.1/firebase-auth.js"></script>
+        <script src="/__/firebase/7.2.1/firebase-functions.js"></script>
+        <script src="/__/firebase/init.js"></script>
+        <script src="scripts/constants.js"></script>
+        <script src="scripts/location.js"></script>
+        {{#if localhost}} <script src="/scripts/localhost.js"></script>{{/if}}
+        <script src="scripts/index.js"></script>
+    </head>
+    <body>
+        <div id="overlay" class="overlay hide">
+                <div class="spinner"></div>
+        </div>
+        <div class="viewport">
+            <div class="header">
+                <div class="account">
+                    {{#if user}}
+                    <button class="accountButton" onclick="toggleAccountPanel()">
+                        <img id="avater" class="accountImage headerImage" style="background-color: {{imgColor}}" src="{{imgUrl}}" alt="Avatar">
+                    </button>
+                    <div id="accountPanel" class="panel hide">
+                        <div class="panelHead">
+                            <img id='panelImg' class="accountImage panelImage" style="background-color: {{imgColor}}" src="{{imgUrl}}" alt="Avatar">
+                            <div class="accountData">
+                                <div id="userName" class="userName">{{displayName}}</div>
+                                <div id="userEmail" class="userEmail">{{email}}</div>
+                                <button onclick="gotoAccount()" class="userAccount bg">CSA Account</button>
+                            </div>
+                        </div>
+                        <div class="panelTail">
+                            <button class="signout" onclick="signOut()">Sign out</button>
+                        </div>
+                    </div>
+                    {{else}}
+                    <button id="signin" onclick="signIn()" class="signIn bg">Sign in</button>
+                    {{/if}}
+                </div>
+            </div>
+            <div class="content">
+                <div>Search: <input type="search"></div>
+            </div>
+        </div>
+    </body>
+</html>

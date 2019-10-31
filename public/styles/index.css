@@ -1,0 +1,152 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body, button {
+    font-family: arial,sans-serif;
+}
+
+div.header {
+    flex: 0 0 32px;
+    margin: 10px;
+    flex-direction: row-reverse;
+}
+
+div.account {
+    position: relative;
+    display: flex;
+    flex: 1;
+    align-content: center;
+    justify-content: flex-end;
+}
+
+button.accountButton {
+    border: none;
+    background-color: transparent;
+    padding: 5px;
+}
+
+img.headerImage {
+    width: 32px;
+    height: 32px;
+}
+
+img.accountImage {
+    border-radius: 50%;
+    background-color: black;
+    box-shadow: 1px 1px 5px black;
+}
+
+div.panel {
+    position: absolute;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 2px;
+    background-color: white;
+    box-shadow: 2px 2px 5px gray;
+    right: 0;
+    top: 50px;
+    display: flex;
+    flex: 0;
+    flex-direction: column;
+}
+
+div.panelHead {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+}
+
+img.panelImage {
+    width: 96px;
+    height: 96px;
+    flex: .1;
+    background-color: black;
+    margin-right: 20px;
+}
+
+div.accountData {
+    flex: 1;
+}
+
+div.userName {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+div.userEmail {
+    font-size: 12px;
+    color: gray;
+}
+
+div.panelTail {
+    flex: .2;
+    display: flex;
+    flex-direction: row-reverse;
+    background-color: #f5f5f5;
+    border-top: 1px solid rgba(0,0,0,0.2);
+    padding: 10px 0 10px 0;
+}
+
+button.userAccount {
+    margin: 24px 0 0 0;
+    padding: 0 12px 0 12px;
+    width: 128px;
+    height: 30px;
+}
+
+button.signout {
+    color: #666;
+    background-color: #f5f5f5;
+    border: 1px solid #c6c6c6;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    text-decoration: none;
+    margin: 0 20px 0 20px;
+    width: 86px;
+    height: 30px;
+}
+
+button.signout:hover {
+    background-color: #fffefe;
+}
+
+div.viewport {
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    min-height: 100%;
+}
+
+div.content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+button.bg {
+    color: white;
+    background-color: #3781f8;
+    border: 1px solid #2f5bb7;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: default;
+}
+
+button.signIn {
+    width: 76px;
+    height: 30px;
+    line-height: 30px;
+}
+
+button.bg:hover {
+    background-color: #2a62bb;
+}

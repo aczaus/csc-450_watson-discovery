@@ -1,0 +1,109 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+div.viewport {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+}
+
+div.header {
+    flex: 0 0 48px;
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+div.head {
+    font-size: 24px;
+    font-family: arial,sans-serif;
+    align-self: center;
+}
+
+div.content {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+}
+
+div.aside {
+    flex-basis: 300px;
+    display: flex;
+    flex-direction: column;
+    margin: 10px 10px 10px 0;
+}
+
+a.button {
+    padding-right: 20px;
+    display: flex;
+    flex-direction: row;
+    border: none;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+    height: 50px;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+a.unselected:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+a.button i {
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 24px;
+    align-self: center;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+a.button div {
+    align-self: center;
+    font-size: 16px;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+a.selected {
+    background-color: #e8f0fe;
+}
+
+a.selected i {
+    color: #2962ff;
+}
+
+a.selected div {
+    color: #2962ff;
+}
+
+/*information*/
+
+div.information {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+div.infoHeader {
+    padding-top: 12px;
+    font-size: 32px;
+    align-self: center;
+    font-weight: bold;
+}
+
+img.infoAvatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    margin: 12px;
+    align-self: center;
+    background-color: black;
+    box-shadow: 1px 1px 5px black;
+}

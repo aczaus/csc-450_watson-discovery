@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Account</title>
+        <link rel="stylesheet" type="text/css" href="/styles/account.css"/>
+        <link rel="stylesheet" type="text/css" href="/styles/overlay.css"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="/__/firebase/7.2.1/firebase-app.js"></script>
+        <script src="/__/firebase/7.2.1/firebase-auth.js"></script>
+        <script src="/__/firebase/7.2.1/firebase-functions.js"></script>
+        <script src="/__/firebase/init.js"></script>
+        <script src="scripts/constants.js"></script>
+        <script src="scripts/location.js"></script>
+        {{#if localhost}} <script src="/scripts/localhost.js"></script>{{/if}}
+        <script src="/scripts/account.js"></script>
+    </head>
+    <body>
+        <div id="overlay" class="overlay hide">
+            <div class="spinner"></div>
+        </div>
+        <div class="viewport">
+            <div class="header">
+                <div class="head">{{displayName}}'s Account</div>
+            </div>
+            <div class="content">
+                <div class="aside">
+                    <a id="home" onclick="accountNavigateTo(this)" class="button {{#equals navigation "home"}}selected{{else}}unselected{{/equals}}">
+                        <i class="material-icons">person</i>
+                        <div>Home</div>
+                    </a>
+                    <a id="personal_information" onclick="accountNavigateTo(this)" class="button {{#equals navigation "personal_information"}}selected{{else}}unselected{{/equals}}">
+                        <i class="material-icons">recent_actors</i>
+                        <div>Personal Information</div>
+                    </a>
+                    <a id="security" onclick="accountNavigateTo(this)" class="button {{#equals navigation "security"}}selected{{else}}unselected{{/equals}}">
+                        <i class="material-icons">lock_outline</i>
+                        <div>Security</div>
+                    </a>
+                    <a id="history" onclick="accountNavigateTo(this)" class="button {{#equals navigation "history"}}selected{{else}}unselected{{/equals}}">
+                        <i class="material-icons">update</i>
+                        <div>History</div>
+                    </a>
+                    <a id="settings" onclick="accountNavigateTo(this)" class="button {{#equals navigation "settings"}}selected{{else}}unselected{{/equals}}">
+                        <i class="material-icons">settings</i>
+                        <div>Settings</div>
+                    </a>
+                    <a class="button unselected" onclick="gotoIndex()">
+                        <i class="material-icons">arrow_back</i>
+                        <div>Return</div>
+                    </a>
+                </div>
+                {{#equals navigation "home"}}
+                <div class="information">
+                    <img class="infoAvatar" style="background-color: {{imgColor}}" src="{{imgUrl}}" alt="Avatar">
+                    <div class="infoHeader">Welcome, {{displayName}}</div>
+                    <div class="infoBox"></div>
+                </div>
+                {{/equals}}
+                {{#equals navigation "personal_information"}}
+                <div class="information">
+                    Personal Information Goes Here
+                    Will show all their user data and will allow for changing their profile picture.
+                </div>
+                {{/equals}}
+                {{#equals navigation "security"}}
+                <div class="information">
+                    Security Goes Here
+                    allows for changing their password
+                </div>
+                {{/equals}}
+                {{#equals navigation "history"}}
+                <div class="information">
+                    History Goes Here
+                </div>
+                {{/equals}}
+                {{#equals navigation "settings"}}
+                <div class="information">
+                    Settings Goes Here
+                </div>
+                {{/equals}}
+            </div>
+        </div>
+    </body>
+</html>
