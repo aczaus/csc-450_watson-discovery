@@ -1,5 +1,9 @@
+html, body {
+    height: 100%;
+}
+
 div.overlay {
-    position: absolute;
+    position: fixed;
     background-color: black;
     opacity: 0.5;
     z-index: 100;

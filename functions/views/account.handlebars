@@ -30,13 +30,13 @@
                         <i class="material-icons">person</i>
                         <div>Home</div>
                     </a>
+                    <a id="upload" onclick="accountNavigateTo(this)" class="button {{#equals navigation "upload"}}selected{{else}}unselected{{/equals}}">
+                        <i class="material-icons">assignment</i>
+                        <div>Upload Notes</div>
+                    </a>
                     <a id="personal_information" onclick="accountNavigateTo(this)" class="button {{#equals navigation "personal_information"}}selected{{else}}unselected{{/equals}}">
                         <i class="material-icons">recent_actors</i>
                         <div>Personal Information</div>
-                    </a>
-                    <a id="security" onclick="accountNavigateTo(this)" class="button {{#equals navigation "security"}}selected{{else}}unselected{{/equals}}">
-                        <i class="material-icons">lock_outline</i>
-                        <div>Security</div>
                     </a>
                     <a id="history" onclick="accountNavigateTo(this)" class="button {{#equals navigation "history"}}selected{{else}}unselected{{/equals}}">
                         <i class="material-icons">update</i>
@@ -52,32 +52,103 @@
                     </a>
                 </div>
                 {{#equals navigation "home"}}
-                <div class="information">
-                    <img class="infoAvatar" style="background-color: {{imgColor}}" src="{{imgUrl}}" alt="Avatar">
-                    <div class="infoHeader">Welcome, {{displayName}}</div>
-                    <div class="infoBox"></div>
+                <div class="infoWrapper">
+                    <div class="information">
+                        <img class="infoAvatar" style="background-color: {{imgColor}}" src="{{imgUrl}}" alt="Avatar">
+                        <div class="infoHeader">Welcome, {{displayName}}</div>
+                        <div class="infoBox">
+                            <div class="infoBoxRow">
+                                <div class="infoDisplay">
+                                    <div class="infoDisplayHeader">
+                                        <div>Contribute Your Notes</div>
+                                    </div>
+                                    <div class="infoDescription">
+                                        Upload Your Notes to our Website!
+                                    </div>
+                                    <a id="upload" onclick="accountNavigateTo(this)" class="infoButton">
+                                        <div>Upload Notes Here</div>
+                                    </a>
+                                </div>
+                                <div class="infoDisplay">
+                                    <div class="infoDisplayHeader">
+                                        <div>Account Personal Information</div>
+                                    </div>
+                                    <div class="infoDescription">
+                                        Update your personal information including being able to change your password
+                                    </div>
+                                    <a id="personal_information" onclick="accountNavigateTo(this)" class="infoButton">
+                                        <div>Manage your personal information</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="infoBoxRow">
+                                <div class="infoDisplay">
+                                    <div class="infoDisplayHeader">
+                                        <div>Review Your Upload History</div>
+                                    </div>
+                                    <div class="infoDescription">
+                                        Check out all notes that you have uploaded through this account
+                                    </div>
+                                    <a id="history" onclick="accountNavigateTo(this)" class="infoButton">
+                                        <div>Go to your history</div>
+                                    </a>
+                                </div>
+                                <div class="infoDisplay">
+                                    <div class="infoDisplayHeader">
+                                        <div>Personalize your Account</div>
+                                    </div>
+                                    <div class="infoDescription">
+                                        Change your theme or modify other settings
+                                    </div>
+                                    <a id="settings" onclick="accountNavigateTo(this)" class="infoButton">
+                                        <div>Change settings</div>
+                                    </a> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/equals}}
+                {{#equals navigation "upload"}}
+                <div class="infoWrapper">
+                    <div class="information">
+                        <div class="infoHeader">Upload Notes</div>
+                        <div class="infoBox">
+                            <div class="notesContent">
+                                <textarea class="notesText" maxlength="2621440"></textarea>
+                                <a class="notesSubmit"><div>Submit Notes</div></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {{/equals}}
                 {{#equals navigation "personal_information"}}
-                <div class="information">
-                    Personal Information Goes Here
-                    Will show all their user data and will allow for changing their profile picture.
-                </div>
-                {{/equals}}
-                {{#equals navigation "security"}}
-                <div class="information">
-                    Security Goes Here
-                    allows for changing their password
+                <div class="infoWrapper">
+                    <div class="information">
+                        <div class="infoHeader">Peronal Information</div>
+                        <div class="updateBox">
+                            <div class="updateHeader">Profile</div>
+                            <div class="updateDescription">Update information of your profile</div>
+                            <div class="updateInput">
+
+                            </div>
+                        </div>
+                        <a class="profileUpdate updateDisabled"><div>Update Profile</div></a>
+                    </div>
                 </div>
                 {{/equals}}
                 {{#equals navigation "history"}}
-                <div class="information">
-                    History Goes Here
+                <div class="infoWrapper"></div>
+                    <div class="information">
+                        History Goes Here
+                    </div>
                 </div>
                 {{/equals}}
                 {{#equals navigation "settings"}}
-                <div class="information">
-                    Settings Goes Here
+                <div class="infoWrapper">
+                    <div class="information">
+                        Settings Goes Here
+                    </div>
                 </div>
                 {{/equals}}
             </div>

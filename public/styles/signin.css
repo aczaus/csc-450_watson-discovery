@@ -134,3 +134,8 @@ div.seperator {
 button.center {
     align-self: center;
 }
+
+input.hiddenSubmit {
+    visibility: hidden;
+    position: absolute;
+}

@@ -34,7 +34,7 @@ div.aside {
     flex-basis: 300px;
     display: flex;
     flex-direction: column;
-    margin: 10px 10px 10px 0;
+    margin: 10px 10px 10px 10px;
 }
 
 a.button {
@@ -81,13 +81,22 @@ a.selected i {
 
 a.selected div {
     color: #2962ff;
+    font-weight: bold;
 }
 
 /*information*/
 
+div.infoWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 32px 16px 32px;
+}
+
 div.information {
     flex: 1;
     display: flex;
+    align-self: flex-start;
     flex-direction: column;
 }
 
@@ -95,7 +104,6 @@ div.infoHeader {
     padding-top: 12px;
     font-size: 32px;
     align-self: center;
-    font-weight: bold;
 }
 
 img.infoAvatar {
@@ -106,4 +114,195 @@ img.infoAvatar {
     align-self: center;
     background-color: black;
     box-shadow: 1px 1px 5px black;
+}
+
+div.infoBox {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+div.infoBoxRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+div.infoDisplay {
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 10px;
+    height: 256px;
+    flex-basis: 400px;
+    margin: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+div.infoDisplayHeader {
+    flex: .2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 1em;
+    padding: 16px;
+}
+
+div.infoDisplayHeader div {
+    text-align: center;
+    font-size: 24px;
+}
+
+div.infoDescription {
+    color: rgba(0,0,0,0.5);
+    flex: .65;
+    padding: 16px;
+}
+
+a.infoButton {
+    border-top: 1px solid #00000033;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    flex: .15;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+    padding: 16px 16px 16px 32px;
+}
+
+a.infoButton:hover {
+    background-color: #0000000d;
+}
+
+a.infoButton div {
+    color:#2962ff;
+    font-weight: bold;
+}
+
+div.notesContent {
+    width: 80vw;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+textarea.notesText {
+    resize: none;
+    white-space: nowrap;
+    flex: 1;
+    margin: 32px 32px 0 32px;
+    padding: 8px;
+    border: 2px solid #00000033;
+    outline: none;
+    border-radius: 10px;
+    line-height: 1.5em;
+}
+
+textarea.notesText:focus {
+    border-color: #4285f4;
+}
+
+a.notesSubmit {
+    flex-basis: 48px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+a.notesSubmit div {
+    padding: 10px 14px 10px 14px;
+    border-radius: 3px;
+    padding: 16px;
+    align-self: center;
+    text-align: center;
+    color: white;
+    background-color: #4285f4;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+a.notesSubmit div:hover {
+    background-color: #3369c0;
+}
+
+div.updateBox {
+    border: 1px solid #00000033;
+    border-radius: 10px;
+    height: 300px;
+    padding: 16px;
+    margin: 32px 64px 16px 64px;
+    width: 80%;
+    align-self: center;
+}
+
+div.updateHeader {
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+div.updateDescription {
+    font-size: 16px;
+    color: rgba(0,0,0,0.5);
+}
+
+div.updateInput {
+
+}
+
+@media only screen and (max-width: 1200px) {
+    div.content {
+        flex-direction: column;
+    }
+    div.aside {
+        flex-direction: row;
+        flex-basis: auto;
+        justify-content: space-evenly;
+    }
+
+    div.notesContent {
+        width: 90vw;
+    }
+
+    div.information {
+        align-self: center;
+    }
+
+    a.button {
+        flex: 1;
+        border-radius: 0px;
+    }
+    a.unselected:hover {
+        color: #2962ff;
+        background-color: transparent;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    div.infoBoxRow {
+        flex-direction: column;
+    }
+
+    div.infoDisplay {
+        flex-basis: auto;
+        max-width: 400px;
+    }
+
+    div.notesContent {
+        width: 95vw;
+    }
+
+    div.aside {
+        overflow-x: scroll;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    div.aside::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
+
 }
