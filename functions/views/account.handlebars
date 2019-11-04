@@ -7,14 +7,14 @@
         <link rel="stylesheet" type="text/css" href="/styles/account.css"/>
         <link rel="stylesheet" type="text/css" href="/styles/overlay.css"/>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <script src="/__/firebase/7.2.1/firebase-app.js"></script>
-        <script src="/__/firebase/7.2.1/firebase-auth.js"></script>
-        <script src="/__/firebase/7.2.1/firebase-functions.js"></script>
-        <script src="/__/firebase/init.js"></script>
-        <script src="scripts/constants.js"></script>
-        <script src="scripts/location.js"></script>
-        {{#if localhost}} <script src="/scripts/localhost.js"></script>{{/if}}
-        <script src="/scripts/account.js"></script>
+        <script type="text/javascript" src="/__/firebase/7.2.1/firebase-app.js"></script>
+        <script type="text/javascript" src="/__/firebase/7.2.1/firebase-auth.js"></script>
+        <script type="text/javascript" src="/__/firebase/7.2.1/firebase-functions.js"></script>
+        <script type="text/javascript" src="/__/firebase/init.js"></script>
+        <script type="text/javascript" src="scripts/constants.js"></script>
+        <script type="text/javascript" src="scripts/location.js"></script>
+        {{#if localhost}} <script type="text/javascript" src="/scripts/localhost.js"></script>{{/if}}
+        <script type="text/javascript" src="/scripts/account.js"></script>
     </head>
     <body>
         <div id="overlay" class="overlay hide">
@@ -42,10 +42,12 @@
                         <i class="material-icons">update</i>
                         <div>History</div>
                     </a>
+                    {{#if localhost}}
                     <a id="settings" onclick="accountNavigateTo(this)" class="button {{#equals navigation "settings"}}selected{{else}}unselected{{/equals}}">
                         <i class="material-icons">settings</i>
                         <div>Settings</div>
                     </a>
+                    {{/if}}
                     <a class="button unselected" onclick="gotoIndex()">
                         <i class="material-icons">arrow_back</i>
                         <div>Return</div>
@@ -115,8 +117,10 @@
                         <div class="infoHeader">Upload Notes</div>
                         <div class="infoBox">
                             <div class="notesContent">
-                                <textarea class="notesText" maxlength="2621440"></textarea>
-                                <a class="notesSubmit"><div>Submit Notes</div></a>
+                                <textarea id="uploadedNotes" class="notesText" maxlength="2621440" placeholder="Paste note text here" spellcheck="true" required></textarea>
+                                <div id="submitSuccess" class="submitResult success hide"></div>
+                                <div id="submitError" class="submitResult error hide"></div>
+                                <a id="submitNotes" onclick="uploadFile()" class="notesSubmit"><div>Submit Notes</div></a>
                             </div>
                         </div>
                     </div>
@@ -125,29 +129,64 @@
                 {{#equals navigation "personal_information"}}
                 <div class="infoWrapper">
                     <div class="information">
-                        <div class="infoHeader">Peronal Information</div>
+                        <div class="infoHeader">Personal Information</div>
                         <div class="updateBox">
                             <div class="updateHeader">Profile</div>
                             <div class="updateDescription">Update information of your profile</div>
-                            <div class="updateInput">
-
+                            <div class="inputs">
+                                <div class="updateInput">
+                                    <div class="updateKey">Email</div>
+                                    <input id="newEmail" oninput="checkEmail()" class="updateValue" type="email" placeholder={{email}} autocomplete="new-username">
+                                    <button id="newEmailButton" onclick="updateEmail()" class="updateSubmit" disabled><div>Update</div><i class="material-icons">send</i></a>
+                                </div>
+                                <div class="updateInput">
+                                    <div class="updateKey">Name</div>
+                                    <input id="newDisplayFirstName" oninput="checkDisplayName()" class="updateValue" type="text" placeholder='First Name' autocomplete="new-name">
+                                    <input id="newDisplayLastName" oninput="checkDisplayName()" class="updateValue" type="text" placeholder='Last Name' autocomplete="new-name">
+                                    <button id="newDisplayNameButton" onclick="updateDisplayName()" class="updateSubmit" disabled><div>Update</div><i class="material-icons">send</i></a>
+                                </div>
                             </div>
+                            <div id="profileError" class="updateError hide"></div>
+                            <div id="profileSuccess" class="updateSuccess hide"></div>
                         </div>
-                        <a class="profileUpdate updateDisabled"><div>Update Profile</div></a>
+                        {{#equals provider "password"}}
+                        <div class="updateBox">
+                            <div class="updateHeader">Security</div>
+                            <div class="updateDescription">Update private profile information</div>
+                            <div class="inputs">
+                                <div class="updateInput">
+                                    <div class="updateKey">Password</div>
+                                    <input id="newPassword" oninput="checkPassword()" class="updateValue" type="password" placeholder="New Password" autocomplete="new-password">
+                                    <input id="newConfirmPassword" oninput="checkPassword()" class="updateValue" type="password" placeholder="Confirm New Password" autocomplete="new-password">
+                                    <button id="newPasswordButton" onclick="updatePassword()" class="updateSubmit" disabled><div>Update</div><i class="material-icons">send</i></a>
+                                </div>
+                            </div>
+                            <div id="securityError" class="updateError hide"></div>
+                            <div id="securitySuccess" class="updateSuccess hide"></div>
+                        </div>
+                        {{/equals}}
                     </div>
                 </div>
                 {{/equals}}
                 {{#equals navigation "history"}}
-                <div class="infoWrapper"></div>
+                <div class="infoWrapper">
                     <div class="information">
-                        History Goes Here
+                        <div class="dates">
+                        {{#each history}}
+                            <div class="dateElement {{#mod2 @index}}light{{else}}dark{{/mod2}}">
+                                <div class="date">{{this.date}}</div>
+                            </div>
+                        {{else}}
+                            <div>No Content</div>
+                        {{/each}}
+                        </div>
                     </div>
                 </div>
                 {{/equals}}
                 {{#equals navigation "settings"}}
                 <div class="infoWrapper">
                     <div class="information">
-                        Settings Goes Here
+                        No Settings Currently
                     </div>
                 </div>
                 {{/equals}}

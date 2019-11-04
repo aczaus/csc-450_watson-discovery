@@ -1,5 +1,5 @@
-document.addEventListener("DOMContentLoaded", () => {
-    firebase.auth().addAuthTokenListener(idToken => {
+document.addEventListener("DOMContentLoaded", function() {
+    firebase.auth().addAuthTokenListener(function(idToken) {
         document.cookie = "__session=" + idToken + ";max-age=2592000";
     });
 });

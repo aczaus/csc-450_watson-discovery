@@ -13,27 +13,30 @@ div.viewport {
     left: 0;
     display: flex;
     flex-direction: column;
+    -ms-flex-direction: column;
     align-content: center;
     justify-content: center;
     text-align: center;
     width: 100%;
+    height: 100%;
     min-height: 100%;
 }
 
 div.box {
-    border: 1px solid rgba(0,0,0,0.2);
+    border: 1px solid #cccccc;
     border-radius: 5px;
     background-color: white;
     box-shadow: 2px 2px 5px gray;
     flex-direction: column;
-    max-width: 100%;
+    -ms-flex-direction: column;
     margin: 0 auto;
-    min-width: 400px;
+    width: 500px;
 }
 
 div.view {
     display: flex;
     flex-direction: column;
+    -ms-flex-direction: column;
     min-height: 300px;
     padding: 48px 40px 36px 40px;
 }
@@ -50,6 +53,7 @@ div.content {
 div.row {
     display: flex;
     flex-direction: row;
+    -ms-flex-direction: row;
     padding: 10px 10px 10px 10px;
 }
 
@@ -71,13 +75,15 @@ div.description {
 
 input.textInput {
     padding-left: 10px;
-    margin: 0 10px 0 10px;
-    border: 1px solid rgba(0,0,0,0.2);
+    margin: 10px 10px 0 10px;
+    border: 1px solid #cccccc;
+    height: 36px;
     min-height: 36px;
     border-radius: 5px;
     background-color: white;
     color: black;
     flex: 1;
+    -ms-flex: 1 1 auto;
 }
 
 input.textInput:focus {
@@ -87,7 +93,7 @@ input.textInput:focus {
 }
 
 input.textInput::placeholder {
-    color: rgba(0,0,0,0.5);
+    color: #cccccc;
 }
 
 div.buttons {
@@ -95,6 +101,7 @@ div.buttons {
     margin-top: auto;
     display: flex;
     flex-direction: row;
+    -ms-flex-direction: row;
     justify-content: space-between;
 }
 
@@ -128,7 +135,7 @@ div.center {
 }
 
 div.seperator {
-    border-top: 1px solid rgba(0,0,0,0.2);
+    border-top: 1px solid #cccccc;
 }
 
 button.center {
@@ -138,4 +145,22 @@ button.center {
 input.hiddenSubmit {
     visibility: hidden;
     position: absolute;
+    width: 0;
+    height: 0;
+}
+
+@media only screen and (max-width: 600px) {
+
+    div.box {
+        width: 100%;
+        height: 100%;
+        border: none;
+        box-shadow: none;
+    }
+
+    div.row {
+        flex-direction: column;
+        -ms-flex-direction: column;
+    }
+
 }

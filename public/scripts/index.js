@@ -14,10 +14,10 @@ function setAccountPanel(showPanel) {
 function signOut() {
     hide(constants.accountPanel);
     firebase.auth().signOut()
-    .then(() => {
+    .then(function() {
         gotoIndex();
     })
-    .catch(error => {
+    .catch(function(error) {
         hideOverlay();
     });
 }

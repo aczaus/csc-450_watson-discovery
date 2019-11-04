@@ -25,7 +25,7 @@ var impl = math['seed' + rngname] = function(seed, options, callback) {
         else return prng;
       })(
 
-  function() {
+  () => {
     var n = arc4.g(chunks),             // Start with a numerator n < 2 ^ 48
         d = startdenom,                 //   and denominator d = 2 ^ 48.
         x = 0;                          //   and no 'extra last byte'.
@@ -81,7 +81,7 @@ function flatten(obj, depth) {
 }
 
 function mixkey(seed, key) {
-  var stringseed = seed + '', smear, j = 0;
+  var stringseed = String(seed), smear, j = 0;
   while (j < stringseed.length) {
     key[mask & j] =
       mask & ((smear ^= key[mask & j] * 19) + stringseed.charCodeAt(j++));
@@ -96,7 +96,7 @@ function autoseed(seed) {
     global.crypto.getRandomValues(seed = new Uint8Array(width));
     return tostring(seed);
   } catch (e) {
-    return [+new Date, global, (seed = global.navigator) && seed.plugins,
+    return [Number(new Date), global, (seed = global.navigator) && seed.plugins,
       global.screen, tostring(pool)];
   }
 }
@@ -114,7 +114,7 @@ if (module && module.exports) {
     nodecrypto = require('crypto');
   } catch (ex) { console.log(ex);}
 } else if (define && define.amd) {
-  define(function() { return impl; });
+  define(() => { return impl; });
 }
 
 })(

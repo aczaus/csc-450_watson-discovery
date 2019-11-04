@@ -1,7 +1,7 @@
 function signInWithGoogle() {
     var provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({prompt: 'select_account'});
-    firebase.auth().signInWithPopup(provider).then(result => {
+    firebase.auth().signInWithPopup(provider).then(function(result) {
         gotoIndex();
     });
 }
@@ -24,14 +24,14 @@ function signin() {
     show(constants.overlay);
     hide(constants.loginError);
     firebaseLogin(email, password)
-    .then(cred => {
+    .then(function(cred) {
         cred.user.getIdToken()
-        .then(token => {
+        .then(function(token) {
             gotoIndex();
-        }).catch(error => {
+        }).catch(function(error) {
         });
     })
-    .catch(error => {
+    .catch(function(error) {
         showError(constants.loginError, error.message);
         hide(constants.overlay);
     });
@@ -39,16 +39,16 @@ function signin() {
 
 function firebaseLogin(email, password) {
     return firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() => {
+    .then(function() {
         return firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(cred => {
+        .then(function(cred) {
             return Promise.resolve(cred);
         })
-        .catch(error => {
+        .catch(function(error) {
             return Promise.reject(error)
         });
     })
-    .catch(error => {
+    .catch(function(error) {
         return Promise.reject(error);
     });
 }
@@ -63,16 +63,16 @@ function register() {
     hide(constants.registerError);
     const register = firebase.functions().httpsCallable('registerUser');
     register({email: email, password: password, confirm: confirm, firstName: firstName, lastName: lastName})
-    .then((request) => {
+    .then(function(request) {
         firebaseLogin(email, password)
-        .then(() => {
+        .then(function() {
             window.location = '/';
         })
-        .catch(error => {
+        .catch(function(error) {
             alert('An error occured while trying to login to account');
         });
     })
-    .catch(error => {
+    .catch(function(error) {
         showError(constants.registerError, error.message);
         hide(constants.overlay);
     });

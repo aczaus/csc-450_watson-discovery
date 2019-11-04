@@ -29,10 +29,19 @@ function getIdTokenFromRequest(req, res) {
 }
 
 async function addDecodedIdTokenToRequest(idToken, req) {
-    return admin.auth().verifyIdToken(idToken)
-    .then(decodedIdToken => {
-      return admin.auth().getUser(decodedIdToken.uid)
-      .then(user => {
+
+  return admin.auth().verifyIdToken(idToken).then(decodedIdToken => {
+    return admin.auth().getUser(decodedIdToken.uid);
+  }).then(user => {
+    req.user = user;
+    return;
+  }).catch(error => {
+    return;
+  })
+
+  /*
+    return admin.auth().verifyIdToken(idToken).then(decodedIdToken => {
+      return admin.auth().getUser(decodedIdToken.uid).then(user => {
         req.user = user;
         return;
       }).catch(error => {
@@ -41,6 +50,7 @@ async function addDecodedIdTokenToRequest(idToken, req) {
     }).catch(error => {
       return;
     });
+    */
 }
 
 exports.validateFirebaseIdToken = validateFirebaseIdToken;
