@@ -11,7 +11,8 @@ admin.initializeApp({
 });
 
 const discoveryClient = new DiscoveryV1({
-authenticator: new IamAuthenticator({ apikey: '1iAjXcUNg5_oKPqGIcEFnNu2eLUXzrysaoiPxlymkOY4' }),
+authenticator: new IamAuthenticator({ apikey: 'mvW3jDM1Afv_FlDhfNaICNLizZ06St2srNzhsBuzlmQ1' }),
+serviceUrl: 'https://gateway-wdc.watsonplatform.net/discovery/api',
 version: '2019-02-01',
 });
 
@@ -38,33 +39,48 @@ exports.uploadFile = functions.https.onCall((data, context) => {
     const text = data.text;
     const uid = context.auth.uid;
     const timestamp = admin.firestore.Timestamp.now();
+    let counter = 0;
+    let lastUpload = new admin.firestore.Timestamp(0,0);
+    let counterError = false;
+    let counterDate = null;
     const userRef = admin.firestore().collection("Users").doc(uid);
     const batch = admin.firestore().batch();
     return userRef.get().then(doc => {
-        let counter = doc.get('uploadCounter') || 0;
-        const lastUpload = doc.get('lastUpload') || new admin.firestore.Timestamp(0,0);
-        const waitTime = 30;
+        counter = doc.get('uploadCounter') || counter;
+        lastUpload = doc.get('lastUpload') || lastUpload;
+        const waitTime = 3600;
         const difference = timestamp.seconds - lastUpload.seconds;
         if(difference > waitTime) {
             counter = 0;
         }
-        if(counter >= 2) {
+        if(counter >= 10) {
             const timeLeft = waitTime - difference;
-            const date = new Date({seconds: timeLeft});
-            throw new functions.https.HttpsError(
-                "invalid-argument", 
-                "The amount of uploads for this account has exceeded the limit.  Try again in (" + date.getSeconds() + ") minutes");
+            counterDate = new Date({seconds: timeLeft});
+            counterError = true;
+            return Promise.reject();
         }
         else{
-            //IBM
-            batch.set(userRef, {uploadCounter: counter + 1, lastUpload: timestamp}, {merge: true});
-            batch.set(userRef.collection("history").doc(), {name: name, date: timestamp});
-            return batch.commit();
+            return discoveryClient.addDocument({
+                environmentId: "dfeb87c1-c287-4189-acea-1800303d66db",
+                collectionId: "efd843b6-3fc2-4d1d-99f5-88e806056170",
+                file: text,
+            });
         }
+    }).then(result => {
+        batch.set(userRef, {uploadCounter: counter + 1, lastUpload: timestamp}, {merge: true});
+        batch.set(userRef.collection("history").doc(), {name: name, date: timestamp});
+        return batch.commit();
     }).then(_ => {
         return;
     }).catch(error => {
-        throw new functions.https.HttpsError('internal', "An error occured while attempting to upload the file");
+        if(counterError) {
+            throw new functions.https.HttpsError(
+                "invalid-argument", 
+                "The amount of uploads for this account has exceeded the limit.  Try again in (" + counterDate.getSeconds() + ") minutes");
+        }
+        else {
+            throw new functions.https.HttpsError('internal', "An error occured while attempting to upload the file");
+        }
     });
 
 });

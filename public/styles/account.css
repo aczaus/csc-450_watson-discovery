@@ -239,6 +239,8 @@ a.notesSubmit {
     -ms-flex-direction: column;
     margin-top: 12px;
     margin-bottom: 12px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 a.notesSubmit div {
