@@ -1,17 +1,17 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const serviceAccount = require("./ibmcsa-b542b-firebase-adminsdk-wmqg6-4667a6f3f7");
 const expressApp = require('./express-app');
 const DiscoveryV1 = require('ibm-watson/discovery/v1');
 const { IamAuthenticator } = require('ibm-watson/auth');
+const keys = require('./config')
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert(keys.serviceAccount),
     databaseURL: "https://ibmcsa-b542b.firebaseio.com"
 });
 
 const discoveryClient = new DiscoveryV1({
-authenticator: new IamAuthenticator({ apikey: 'mvW3jDM1Afv_FlDhfNaICNLizZ06St2srNzhsBuzlmQ1' }),
+authenticator: new IamAuthenticator({ apikey: keys.apikey }),
 serviceUrl: 'https://gateway-wdc.watsonplatform.net/discovery/api',
 version: '2019-02-01',
 });
@@ -57,12 +57,12 @@ exports.uploadFile = functions.https.onCall((data, context) => {
             const timeLeft = waitTime - difference;
             counterDate = new Date({seconds: timeLeft});
             counterError = true;
-            return Promise.reject();
+            return Promise.reject(new Error(""));
         }
         else{
             return discoveryClient.addDocument({
-                environmentId: "dfeb87c1-c287-4189-acea-1800303d66db",
-                collectionId: "efd843b6-3fc2-4d1d-99f5-88e806056170",
+                environmentId: keys.environmentId,
+                collectionId: keys.collectionId,
                 file: text,
             });
         }
@@ -73,6 +73,7 @@ exports.uploadFile = functions.https.onCall((data, context) => {
     }).then(_ => {
         return;
     }).catch(error => {
+        console.log(error);
         if(counterError) {
             throw new functions.https.HttpsError(
                 "invalid-argument", 
