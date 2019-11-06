@@ -11,8 +11,8 @@
         <script type="text/javascript" src="/__/firebase/7.2.1/firebase-auth.js"></script>
         <script type="text/javascript" src="/__/firebase/7.2.1/firebase-functions.js"></script>
         <script type="text/javascript" src="/__/firebase/init.js"></script>
-        <script type="text/javascript" src="scripts/constants.js"></script>
-        <script type="text/javascript" src="scripts/location.js"></script>
+        <script type="text/javascript" src="/scripts/constants.js"></script>
+        <script type="text/javascript" src="/scripts/location.js"></script>
         {{#if localhost}} <script type="text/javascript" src="/scripts/localhost.js"></script>{{/if}}
         <script type="text/javascript" src="/scripts/account.js"></script>
     </head>
@@ -95,6 +95,7 @@
                                         <div>Go to your history</div>
                                     </a>
                                 </div>
+                                {{#if localhost}}
                                 <div class="infoDisplay">
                                     <div class="infoDisplayHeader">
                                         <div>Personalize your Account</div>
@@ -106,6 +107,7 @@
                                         <div>Change settings</div>
                                     </a> 
                                 </div>
+                                {{/if}}
                             </div>
                         </div>
                     </div>
@@ -176,8 +178,6 @@
                             <div class="dateElement {{#mod2 @index}}light{{else}}dark{{/mod2}}">
                                 <div class="date">{{this.date}}</div>
                             </div>
-                        {{else}}
-                            <div>No Content</div>
                         {{/each}}
                         </div>
                     </div>

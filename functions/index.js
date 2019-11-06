@@ -23,7 +23,8 @@ exports.getUserFiles = functions.https.onCall((data, context) => {
         var uploadedFiles = []
         snapshot.forEach(doc => {
             var newElement = {
-                name: doc.data().name,
+                documentId: doc.id,
+                discoverId: doc.data().discoverId,
                 date: doc.data().date
             }
             uploadedFiles.push(newElement)
@@ -44,7 +45,6 @@ exports.uploadFile = functions.https.onCall((data, context) => {
     let counterError = false;
     let counterDate = null;
     const userRef = admin.firestore().collection("Users").doc(uid);
-    const batch = admin.firestore().batch();
     return userRef.get().then(doc => {
         counter = doc.get('uploadCounter') || counter;
         lastUpload = doc.get('lastUpload') || lastUpload;
@@ -66,9 +66,11 @@ exports.uploadFile = functions.https.onCall((data, context) => {
                 file: text,
             });
         }
-    }).then(result => {
+    }).then(discover => {
+        const discoverId = discover.result.document_id;
+        const batch = admin.firestore().batch();
         batch.set(userRef, {uploadCounter: counter + 1, lastUpload: timestamp}, {merge: true});
-        batch.set(userRef.collection("history").doc(), {name: name, date: timestamp});
+        batch.set(userRef.collection("history").doc(), {discoveryId: discoverId, date: timestamp});
         return batch.commit();
     }).then(_ => {
         return;

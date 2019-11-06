@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const express = require('express');
+const formidable = require('formidable')
 const exphbs  = require('express-handlebars');
 const firebaseUser = require('./firebaseUser');
 const Handlebars = require('handlebars');
@@ -28,7 +29,7 @@ app.get('/', (req,res) =>{
             layout: false, 
             localhost: isLocalHost(req.hostname),
             user: req.user,
-            imgUrl: req.user.imgUrl || "images/user.png",
+            imgUrl: req.user.imgUrl || "/images/user.png",
             imgColor: req.user.imgUrl ? "#000000" : getRandomColor(req.user.uid),
             displayName: req.user.displayName,
             email: req.user.email,
@@ -63,7 +64,7 @@ app.get('/account', async (req,res) =>{
             layout: false,
             localhost: isLocalHost(req.hostname),
             displayName: req.user.displayName,
-            imgUrl: req.user.imgUrl || "images/user.png",
+            imgUrl: req.user.imgUrl || "/images/user.png",
             imgColor: req.user.imgUrl ? "#000000" : getRandomColor(req.user.uid),
             email: req.user.email,
             navigation: navigation,
@@ -74,6 +75,10 @@ app.get('/account', async (req,res) =>{
     else {
         res.redirect('/');
     }
+});
+
+app.post('/account', (req,res) => {
+    
 });
 
 app.get('/signin', (req,res) =>{
