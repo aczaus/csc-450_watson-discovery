@@ -34,7 +34,7 @@ async function userRefPromise(userRef, timestamp) {
             }
             if(counter >= 10) {
                 const timeLeft = waitTime - difference;
-                const counterDate = new Date();
+                const counterDate = new Date(0,0,0,0,0,0,0);
                 counterDate.setSeconds(timeLeft);
                 return reject(new Error("The amount of uploads for this account has exceeded the limit.  Try again in " + counterDate.getMinutes() + " minutes"));
             }

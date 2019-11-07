@@ -83,8 +83,8 @@ app.post('/account', fileUpload, async (req,res) => {
         .then(results => {
             return renderAccount(req, res, "upload", null, "Files were uploaded successfully");
         })
-        .catch(err => {
-            return renderAccount(req, res, "upload", null, err);
+        .catch(error => {
+            return renderAccount(req, res, "upload", null, error.message);
         })
     }
     else {
