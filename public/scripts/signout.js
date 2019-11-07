@@ -1,7 +1,3 @@
-function toggleAccountPanel() {
-    toggle(constants.accountPanel);
-}
-
 function signOut() {
     showOverlay()
     hide(constants.accountPanel);

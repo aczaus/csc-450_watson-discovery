@@ -33,10 +33,19 @@ document.addEventListener("DOMContentLoaded", function() {
     constants.submitNotes = document.getElementById('submitNotes');
     constants.submitSuccess = document.getElementById('submitSuccess');
     constants.submitError = document.getElementById('submitError');
+    constants.formContent = document.getElementById('formContent');
+    constants.uploadContent = document.getElementById('uploadContent');
+    constants.uploadCollapsibleText = document.getElementById('uploadCollapsibleText');
+    constants.fileInput = document.getElementById('fileInput');
+    constants.fileLabel = document.getElementById('fileLabel');
+    constants.fileText = document.getElementById('fileText');
+    constants.fileSubmitInput = document.getElementById('fileSubmitInput');
 });
 let overlayTimeout;
-function showOverlay() {
-    overlayTimeout = setTimeout(hideOverlay, 10000);
+function showOverlay(hasTimer = true) {
+    if(hasTimer) {
+        overlayTimeout = setTimeout(hideOverlay, 10000);
+    }
     show(constants.overlay);
 }
 
@@ -55,10 +64,19 @@ function show(element) {
     element.classList.add('show');
 }
 
+function toggle(element) {
+    if(isHidden(element)) {
+        show(element);
+    }
+    else {
+        hide(element);
+    }
+}
+
 function isHidden(element) {
-    return element.classList.includes('hide');
+    return element.classList.contains('hide');
 }
 
 function isShown(element) {
-    return element.classList.includes('show');
+    return element.classList.contains('show');
 }

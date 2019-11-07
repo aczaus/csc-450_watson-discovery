@@ -13,11 +13,13 @@
     "node": "10"
   },
   "dependencies": {
+    "busboy-firebase": "^1.0.8",
     "cookie-parser": "1.4.4",
     "express-handlebars": "^3.1.0",
     "firebase-admin": "^8.0.0",
     "firebase-functions": "^3.1.0",
-    "ibm-watson": "^5.1.0"
+    "ibm-watson": "^5.1.0",
+    "textract": "^2.5.0"
   },
   "devDependencies": {
     "eslint": "^5.12.0",

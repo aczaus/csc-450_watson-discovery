@@ -1,8 +1,11 @@
 function signInWithGoogle() {
+    showOverlay(false);
     var provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({prompt: 'select_account'});
     firebase.auth().signInWithPopup(provider).then(function(result) {
-        gotoIndex();
+        window.location = '/'
+    }).catch(function(error) {
+        hideOverlay();
     });
 }
 
@@ -21,19 +24,15 @@ function gotoSignin() {
 function signin() {
     const email =  constants.loginEmail.value;
     const password = constants.loginPassword.value;
-    show(constants.overlay);
+    showOverlay();
     hide(constants.loginError);
     firebaseLogin(email, password)
     .then(function(cred) {
-        cred.user.getIdToken()
-        .then(function(token) {
-            gotoIndex();
-        }).catch(function(error) {
-        });
+        window.location = "/";
     })
     .catch(function(error) {
-        showError(constants.loginError, error.message);
-        hide(constants.overlay);
+        showLoginError(error.message);
+        hideOverlay();;
     });
 }
 
@@ -41,8 +40,8 @@ function firebaseLogin(email, password) {
     return firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(function() {
         return firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(function(cred) {
-            return Promise.resolve(cred);
+        .then(function(_) {
+            return Promise.resolve();
         })
         .catch(function(error) {
             return Promise.reject(error)
@@ -59,23 +58,36 @@ function register() {
     const email = constants.registerEmail.value;
     const password = constants.registerPassword.value;
     const confirm = constants.confirmPassword.value;
-    show(constants.overlay);
+    showOverlay()
     hide(constants.registerError);
-    const register = firebase.functions().httpsCallable('registerUser');
-    register({email: email, password: password, confirm: confirm, firstName: firstName, lastName: lastName})
-    .then(function(request) {
-        firebaseLogin(email, password)
-        .then(function() {
-            window.location = '/';
-        })
-        .catch(function(error) {
-            alert('An error occured while trying to login to account');
-        });
-    })
-    .catch(function(error) {
-        showError(constants.registerError, error.message);
-        hide(constants.overlay);
+    const callable = firebase.functions().httpsCallable('registerUser');
+    callable({email: email, password: password, confirm: confirm, firstName: firstName, lastName: lastName}).then(function(result) {
+        if(result.data.success) {
+            firebaseLogin(email, password)
+            .then(function() {
+                window.location = '/';
+            })
+            .catch(function(error) {
+                alert('An error occured while trying to login to account');
+            });
+        }
+        else {
+            showRegisterError(result.data.response);
+            hideOverlay();
+        }
+    }).catch(function(error) {
+        console.log(error)
+        showRegisterError(error.message);
+        hideOverlay();
     });
+}
+
+function showLoginError(message) {
+    showError(constants.loginError, message);
+}
+
+function showRegisterError(message) {
+    showError(constants.registerError, message);
 }
 
 function showError(element, message) {

@@ -1,6 +1,8 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const expressApp = require('./express-app');
+const uploadFunction = require('./upload-function');
+const result = require('./client-messenger');
 const DiscoveryV1 = require('ibm-watson/discovery/v1');
 const { IamAuthenticator } = require('ibm-watson/auth');
 const keys = require('./config')
@@ -10,7 +12,8 @@ admin.initializeApp({
     databaseURL: "https://ibmcsa-b542b.firebaseio.com"
 });
 
-const discoveryClient = new DiscoveryV1({
+global.keys = keys;
+global.discoveryClient = new DiscoveryV1({
 authenticator: new IamAuthenticator({ apikey: keys.apikey }),
 serviceUrl: 'https://gateway-wdc.watsonplatform.net/discovery/api',
 version: '2019-02-01',
@@ -18,74 +21,15 @@ version: '2019-02-01',
 
 exports.app = functions.https.onRequest(expressApp.app);
 
-exports.getUserFiles = functions.https.onCall((data, context) => {
-    return admin.firestore().collection('Users').doc(context.auth.uid).collection('uploads').get().then(snapshot => {
-        var uploadedFiles = []
-        snapshot.forEach(doc => {
-            var newElement = {
-                documentId: doc.id,
-                discoverId: doc.data().discoverId,
-                date: doc.data().date
-            }
-            uploadedFiles.push(newElement)
-        });
-        return uploadedFiles;
-    }).catch(error => {
-        console.error(error);
-    });
-});
-
 exports.uploadFile = functions.https.onCall((data, context) => {
     const name = data.name;
     const text = data.text;
     const uid = context.auth.uid;
-    const timestamp = admin.firestore.Timestamp.now();
-    let counter = 0;
-    let lastUpload = new admin.firestore.Timestamp(0,0);
-    let counterError = false;
-    let counterDate = null;
-    const userRef = admin.firestore().collection("Users").doc(uid);
-    return userRef.get().then(doc => {
-        counter = doc.get('uploadCounter') || counter;
-        lastUpload = doc.get('lastUpload') || lastUpload;
-        const waitTime = 3600;
-        const difference = timestamp.seconds - lastUpload.seconds;
-        if(difference > waitTime) {
-            counter = 0;
-        }
-        if(counter >= 10) {
-            const timeLeft = waitTime - difference;
-            counterDate = new Date({seconds: timeLeft});
-            counterError = true;
-            return Promise.reject(new Error(""));
-        }
-        else{
-            return discoveryClient.addDocument({
-                environmentId: keys.environmentId,
-                collectionId: keys.collectionId,
-                file: text,
-            });
-        }
-    }).then(discover => {
-        const discoverId = discover.result.document_id;
-        const batch = admin.firestore().batch();
-        batch.set(userRef, {uploadCounter: counter + 1, lastUpload: timestamp}, {merge: true});
-        batch.set(userRef.collection("history").doc(), {discoveryId: discoverId, date: timestamp});
-        return batch.commit();
-    }).then(_ => {
-        return;
+    return uploadFunction.uploadFileToFirebaseAndIBM({filename: name, text: text}, uid).then(response => {
+        return result.resolve(response);
     }).catch(error => {
-        console.log(error);
-        if(counterError) {
-            throw new functions.https.HttpsError(
-                "invalid-argument", 
-                "The amount of uploads for this account has exceeded the limit.  Try again in (" + counterDate.getSeconds() + ") minutes");
-        }
-        else {
-            throw new functions.https.HttpsError('internal', "An error occured while attempting to upload the file");
-        }
+        return result.reject(error.message);
     });
-
 });
 
 exports.updateEmail = functions.https.onCall((data, context) => {
@@ -94,9 +38,9 @@ exports.updateEmail = functions.https.onCall((data, context) => {
     return admin.auth().updateUser(context.auth.uid, {
         email: email
     }).then(user => {
-        return {user: user};
+        return result.resolve("Email updated successfully");
     }).catch(error => {
-        throw new functions.https.HttpsError('invalid-argument', error.message);
+        return result.reject("Failed to update email");
     })
 
 });
@@ -108,53 +52,56 @@ exports.updateName = functions.https.onCall((data, context) => {
     return admin.auth().updateUser(context.auth.uid, {
         displayName: firstName + ' ' + lastName
     }).then((user) => {
-        return {user: user};
+        return result.resolve("Name updated successfully");
     }).catch(error => {
-        throw new functions.https.HttpsError('invalid-argument', error.message);
+        return result.reject("Failed to update email");
     });
 });
 
 exports.updatePassword = functions.https.onCall((data, context) => {
-    const password = data.password;
-    const confirm = data.confirm;
-
-    if( password !== confirm) {
-        throw new functions.https.HttpsError('invalid-argument', "Confirm your password");
+    if(data.password !== data.confirm) {
+        return result.reject("Confirm your password");
     }
-
     return admin.auth().updateUser(context.auth.uid, {
-        password: password
+        password: data.password
     }).then((user) => {
-        return {user: user};
+        return result.resolve("Password updated successfully")
     }).catch(error => {
-        throw new functions.https.HttpsError('invalid-argument', error.message);
+        return result.reject("Failed to update password");
     });
 });
 
 exports.registerUser = functions.https.onCall((data, context) => {
-    const email = data.email;
-    const password = data.password;
-    const confirm = data.confirm;
-    const firstName = data.firstName;
-    const lastName = data.lastName;
-
-    if(password !== confirm) {
-        throw new functions.https.HttpsError('invalid-argument', "Confirm your password");
+    if(data.password !== data.confirm) {
+        return result.reject("Confirm your password");
     }
 
     return admin.auth().createUser({
-        email: email,
+        email: data.email,
         emailVerified: false,
         phoneNumber: undefined,
-        password: password,
-        displayName: firstName + ' ' + lastName,
+        password: data.password,
+        displayName: data.firstName + ' ' + data.lastName,
         photoURL: undefined,
         disabled: false
     }).then((user) => {
-        return {user: user};
+        return result.resolve("User was registered successfully!")
     })
     .catch(error => {
-        throw new functions.https.HttpsError('invalid-argument', error.message);
+        console.log(error)
+        switch(error.code) {
+            case 'auth/invalid-password':
+                return result.reject("The password must be a string with at least 6 characters");
+            case 'auth/credential-already-in-use':
+                return result.reject("The credential provided is already in use")
+            case 'auth/email-already-in-use':
+                return result.reject("The email provided is already in use")
+            case 'auth/account-exists-with-different-credential':
+                return result.reject("An account already exists with the provided credentials");
+            case 'auth/too-many-requests':
+                return result.reject("You have attempted to register too many times and have been locked out");
+            default:
+                return result.reject("An error occured while registering user");
+        }
     });
-
 });

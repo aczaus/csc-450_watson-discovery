@@ -12,11 +12,12 @@
         <script type="text/javascript" src="/__/firebase/7.2.1/firebase-functions.js"></script>
         <script type="text/javascript" src="/__/firebase/init.js"></script>
         <script type="text/javascript" src="/scripts/constants.js"></script>
-        <script type="text/javascript" src="/scripts/location.js"></script>
+        <script type="text/javascript" src="/scripts/cookiefy.js"></script>
         {{#if localhost}} <script type="text/javascript" src="/scripts/localhost.js"></script>{{/if}}
+        {{#equals navigation "upload"}}<script type="text/javascript" src="/scripts/custom_file_input.js"></script>{{/equals}}
         <script type="text/javascript" src="/scripts/account.js"></script>
     </head>
-    <body>
+    <body {{#if alertMessage}}onload="uploadAlert()"{{/if}}>
         <div id="overlay" class="overlay hide">
             <div class="spinner"></div>
         </div>
@@ -26,29 +27,29 @@
             </div>
             <div class="content">
                 <div class="aside">
-                    <a id="home" onclick="accountNavigateTo(this)" class="button {{#equals navigation "home"}}selected{{else}}unselected{{/equals}}">
+                    <a {{#equals navigation "home"}}{{else}}href="/account?navigation=home"{{/equals}} class="button {{#equals navigation "home"}}selected{{else}}unselected{{/equals}}">
                         <i class="material-icons">person</i>
                         <div>Home</div>
                     </a>
-                    <a id="upload" onclick="accountNavigateTo(this)" class="button {{#equals navigation "upload"}}selected{{else}}unselected{{/equals}}">
+                    <a {{#equals navigation "upload"}}{{else}}href="/account?navigation=upload"{{/equals}} class="button {{#equals navigation "upload"}}selected{{else}}unselected{{/equals}}">
                         <i class="material-icons">assignment</i>
                         <div>Upload Notes</div>
                     </a>
-                    <a id="personal_information" onclick="accountNavigateTo(this)" class="button {{#equals navigation "personal_information"}}selected{{else}}unselected{{/equals}}">
+                    <a {{#equals navigation "personal_information"}}{{else}}href="/account?navigation=personal_information"{{/equals}} class="button {{#equals navigation "personal_information"}}selected{{else}}unselected{{/equals}}">
                         <i class="material-icons">recent_actors</i>
                         <div>Personal Information</div>
                     </a>
-                    <a id="history" onclick="accountNavigateTo(this)" class="button {{#equals navigation "history"}}selected{{else}}unselected{{/equals}}">
+                    <a {{#equals navigation "history"}}{{else}}href="/account?navigation=history"{{/equals}} class="button {{#equals navigation "history"}}selected{{else}}unselected{{/equals}}">
                         <i class="material-icons">update</i>
                         <div>History</div>
                     </a>
                     {{#if localhost}}
-                    <a id="settings" onclick="accountNavigateTo(this)" class="button {{#equals navigation "settings"}}selected{{else}}unselected{{/equals}}">
+                    <a {{#equals navigation "settings"}}{{else}}href="/account?navigation=settings"{{/equals}} class="button {{#equals navigation "settings"}}selected{{else}}unselected{{/equals}}">
                         <i class="material-icons">settings</i>
                         <div>Settings</div>
                     </a>
                     {{/if}}
-                    <a class="button unselected" onclick="gotoIndex()">
+                    <a class="button unselected" href="/">
                         <i class="material-icons">arrow_back</i>
                         <div>Return</div>
                     </a>
@@ -67,7 +68,7 @@
                                     <div class="infoDescription">
                                         Upload Your Notes to our Website!
                                     </div>
-                                    <a id="upload" onclick="accountNavigateTo(this)" class="infoButton">
+                                    <a href="/account?navigation=upload" class="infoButton">
                                         <div>Upload Notes Here</div>
                                     </a>
                                 </div>
@@ -78,7 +79,7 @@
                                     <div class="infoDescription">
                                         Update your personal information including being able to change your password
                                     </div>
-                                    <a id="personal_information" onclick="accountNavigateTo(this)" class="infoButton">
+                                    <a href="/account?navigation=personal_information" class="infoButton">
                                         <div>Manage your personal information</div>
                                     </a>
                                 </div>
@@ -91,7 +92,7 @@
                                     <div class="infoDescription">
                                         Check out all notes that you have uploaded through this account
                                     </div>
-                                    <a id="history" onclick="accountNavigateTo(this)" class="infoButton">
+                                    <a href="/account?navigation=history" class="infoButton">
                                         <div>Go to your history</div>
                                     </a>
                                 </div>
@@ -103,7 +104,7 @@
                                     <div class="infoDescription">
                                         Change your theme or modify other settings
                                     </div>
-                                    <a id="settings" onclick="accountNavigateTo(this)" class="infoButton">
+                                    <a href="/account?navigation=settings" class="infoButton">
                                         <div>Change settings</div>
                                     </a> 
                                 </div>
@@ -119,10 +120,28 @@
                         <div class="infoHeader">Upload Notes</div>
                         <div class="infoBox">
                             <div class="notesContent">
-                                <textarea id="uploadedNotes" class="notesText" maxlength="2621440" placeholder="Paste note text here" spellcheck="true" required></textarea>
-                                <div id="submitSuccess" class="submitResult success hide"></div>
-                                <div id="submitError" class="submitResult error hide"></div>
-                                <a id="submitNotes" onclick="uploadFile()" class="notesSubmit"><div>Submit Notes</div></a>
+                                <a class="collapsible" onclick="toggle_content()"><div id="uploadCollapsibleText">Upload Text</div></a>
+                                <div id="formContent" class="collapsible_content show">
+                                    <form class="uploadForm" method="POST" onsubmit="showOverlay(false)" action="/account" enctype="multipart/form-data">
+                                        <div class="uploadSelect">
+                                            <input id="fileInput" name="file[]" class="uploadInputFile" type="file" name="file" data-multiple-caption="{count} files selected" multiple required/>
+                                            <label id="fileLabel" class="uploadFileLabel" for="fileInput">
+                                                <i class="material-icons uploadFileIcon">note_add</i>
+                                                <div id="fileText" class="uploadFileText">Choose a file...</div>
+                                            </label>
+                                        </div>
+                                        <a id="submitFiles" onclick="submitFiles()" class="notesSubmit">
+                                            <input id="fileSubmitInput" type="submit" class="fileSubmit">
+                                            <div>Submit Files</div>
+                                        </a>
+                                    </form>
+                                </div>
+                                <div id="uploadContent" class="collapsible_content hide">
+                                    <textarea id="uploadedNotes" class="notesText" maxlength="2621440" placeholder="Paste note text here" spellcheck="true" required></textarea>
+                                    <div id="submitSuccess" class="submitResult success hide"></div>
+                                    <div id="submitError" class="submitResult error hide"></div>
+                                    <a id="submitNotes" onclick="uploadTextOnly()" class="notesSubmit"><div>Submit Notes</div></a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -176,6 +195,7 @@
                         <div class="dates">
                         {{#each history}}
                             <div class="dateElement {{#mod2 @index}}light{{else}}dark{{/mod2}}">
+                                <div class="filename">{{this.filename}}</div>
                                 <div class="date">{{this.date}}</div>
                             </div>
                         {{/each}}
@@ -192,5 +212,12 @@
                 {{/equals}}
             </div>
         </div>
+        {{#if alertMessage}}
+        <script>
+            function uploadAlert() {
+                alert(" {{alertMessage}} ")
+            }
+        </script>
+        {{/if}}
     </body>
 </html>

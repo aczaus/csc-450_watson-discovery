@@ -10,9 +10,9 @@
         <script type="text/javascript" src="/__/firebase/7.2.1/firebase-auth.js"></script>
         <script type="text/javascript" src="/__/firebase/7.2.1/firebase-functions.js"></script>
         <script type="text/javascript" src="/__/firebase/init.js"></script>
-        <script type="text/javascript" src="/scripts/constants.js"></script>
-        <script type="text/javascript" src="/scripts/location.js"></script>
         {{#if localhost}} <script type="text/javascript" src="/scripts/localhost.js"></script>{{/if}}
+        <script type="text/javascript" src="/scripts/constants.js"></script>
+        <script type="text/javascript" src="/scripts/cookiefy.js"></script>
         <script type="text/javascript" src="scripts/index.js"></script>
     </head>
     <body>
@@ -23,24 +23,24 @@
             <div class="header">
                 <div class="account">
                     {{#if user}}
-                    <button class="accountButton" onclick="toggleAccountPanel()">
+                    <a class="accountButton" onclick="toggleAccountPanel()">
                         <img id="avater" class="accountImage headerImage" style="background-color: {{imgColor}}" src="{{imgUrl}}" alt="Avatar">
-                    </button>
+                    </a>
                     <div id="accountPanel" class="panel hide">
                         <div class="panelHead">
                             <img id='panelImg' class="accountImage panelImage" style="background-color: {{imgColor}}" src="{{imgUrl}}" alt="Avatar">
                             <div class="accountData">
                                 <div id="userName" class="userName">{{displayName}}</div>
                                 <div id="userEmail" class="userEmail">{{email}}</div>
-                                <button onclick="gotoAccount()" class="userAccount bg">CSA Account</button>
+                                <a href='/account' class="userAccount bg"><div>CSA Account</div></a>
                             </div>
                         </div>
                         <div class="panelTail">
-                            <button class="signout" onclick="signOut()">Sign out</button>
+                            <a class="signout" onclick="signOut()"><div>Sign out</div></a>
                         </div>
                     </div>
                     {{else}}
-                    <button id="signin" onclick="signIn()" class="signIn bg">Sign in</button>
+                    <a id="signin" href="/signin" class="signIn bg"><div>Sign in</div></a>
                     {{/if}}
                 </div>
             </div>

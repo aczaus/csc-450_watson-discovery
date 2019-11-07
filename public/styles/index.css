@@ -4,7 +4,7 @@ html, body {
     height: 100%;
 }
 
-body, button {
+body, a {
     font-family: arial,sans-serif;
 }
 
@@ -25,10 +25,11 @@ div.account {
     justify-content: flex-end;
 }
 
-button.accountButton {
+a.accountButton {
     border: none;
     background-color: transparent;
     padding: 5px;
+    cursor: pointer;
 }
 
 img.headerImage {
@@ -78,6 +79,9 @@ img.panelImage {
 div.accountData {
     flex: 1;
     -ms-flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    -ms-flex-direction: column;
 }
 
 div.userName {
@@ -101,14 +105,18 @@ div.panelTail {
     padding: 10px 0 10px 0;
 }
 
-button.userAccount {
+a.userAccount {
     margin: 24px 0 0 0;
-    padding: 0 12px 0 12px;
     width: 128px;
     height: 30px;
+    cursor: pointer;
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-button.signout {
+a.signout {
     color: #666;
     background-color: #f5f5f5;
     border: 1px solid #c6c6c6;
@@ -117,9 +125,13 @@ button.signout {
     margin: 0 20px 0 20px;
     width: 86px;
     height: 30px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-button.signout:hover {
+a.signout:hover {
     background-color: #fffefe;
 }
 
@@ -147,21 +159,26 @@ div.content {
     text-align: center;
 }
 
-button.bg {
+a.bg {
     color: #ffffff;
     background-color: #3781f8;
     border: 1px solid #2f5bb7;
     text-decoration: none;
     font-weight: bold;
-    cursor: default;
+    cursor: pointer;
 }
 
-button.signIn {
+a.signIn {
     width: 76px;
     height: 30px;
     line-height: 30px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    -ms-flex-direction: column;
+    justify-content: center;
 }
 
-button.bg:hover {
+a.bg:hover {
     background-color: #2a62bb;
 }

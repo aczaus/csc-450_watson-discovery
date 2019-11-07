@@ -8,18 +8,28 @@ function checkEmail() {
 }
 function updateEmail() {
     if(constants.newEmail.checkValidity()) {
-        const update = firebase.functions().httpsCallable('updateEmail');
-        hideProfileMessages();
-        showOverlay();
-        update({email: constants.newEmail.value}).then(function(user) {
-            constants.newEmail.value = '';
-            constants.newDisplayNameButton.setAttribute('disabled', 'disabled');
-            profileSuccess("Changed email successfully!")
-            hideOverlay()
-        }).catch(function(error) {
-            profileError(error.message);
-            hideOverlay();
-        });
+        if(confirm("You will be logged out if your email is changed successfuly, do you want to continue?")) {
+            const callable = firebase.functions().httpsCallable('updateEmail');
+            hideProfileMessages();
+            showOverlay();
+            callable({email: constants.newEmail.value}).then(function(result) {
+                if(result.data.success) {
+                    constants.newEmail.value = '';
+                    constants.newDisplayNameButton.setAttribute('disabled', 'disabled');
+                    profileSuccess(result.data.response)
+                    return firebase.auth().signOut().then(function() {
+                        window.location = '/';
+                    });
+                }
+                else {
+                    profileError(result.data.response)
+                }
+                hideOverlay()
+            }).catch(function(error) {
+                profileError(error.message);
+                hideOverlay();
+            });
+        }
     }
 }
 
@@ -36,11 +46,17 @@ function updateDisplayName() {
         const update = firebase.functions().httpsCallable('updateName');
         hideProfileMessages();
         showOverlay();
-        update({firstName: constants.newDisplayFirstName.value, lastName: constants.newDisplayLastName.value}).then(function(user) {
-            constants.newDisplayFirstName.value = '';
-            constants.newDisplayLastName.value = '';
-            constants.newDisplayNameButton.setAttribute('disabled', 'disabled');
-            profileSuccess("Changed display name successfully!");
+        update({firstName: constants.newDisplayFirstName.value, lastName: constants.newDisplayLastName.value}).then(function(result) {
+            if(result.data.success) {
+                constants.newDisplayFirstName.value = '';
+                constants.newDisplayLastName.value = '';
+                constants.newDisplayNameButton.setAttribute('disabled', 'disabled');
+                profileSuccess(result.data.response);
+                location.reload();
+            }
+            else {
+                profileError(result.data.response);
+            }
             hideOverlay();
         }).catch(function(error) {
             profileError(error.message);
@@ -61,19 +77,29 @@ function checkPassword() {
 function updatePassword() {
     if(constants.newPassword.checkValidity() && constants.newConfirmPassword.checkValidity() && 
     constants.newPassword.value === constants.newConfirmPassword.value && constants.newPassword.value.length >= 6) {
-        const update = firebase.functions().httpsCallable('updatePassword');
-        hideSecurityMessages();
-        showOverlay();
-        update({password: constants.newPassword.value, confirm: constants.newConfirmPassword.value}).then(function(user) {
-            constants.newPassword.value = '';
-            constants.newConfirmPassword.value = '';
-            constants.newPasswordButton.setAttribute('disabled', 'disabled');
-            securitySuccess("Changed display name successfully!");
-            hideOverlay()
-        }).catch(function(error) {
-            securityError(error.message);
-            hideOverlay();
-        });
+        if(confirm("You will be logged out if your password is changed successfuly, do you want to continue?")) {
+            const update = firebase.functions().httpsCallable('updatePassword');
+            hideSecurityMessages();
+            showOverlay();
+            update({password: constants.newPassword.value, confirm: constants.newConfirmPassword.value}).then(function(result) {
+                if(result.data.success) {
+                    constants.newPassword.value = '';
+                    constants.newConfirmPassword.value = '';
+                    constants.newPasswordButton.setAttribute('disabled', 'disabled');
+                    securitySuccess(result.data.response);
+                    return firebase.auth().signOut().then(function() {
+                        window.location = '/';
+                    });
+                }
+                else {
+                    securityError(result.data.response);
+                }
+                hideOverlay()
+            }).catch(function(error) {
+                securityError(error.message);
+                hideOverlay();
+            });
+        }
     }
 }
 
@@ -108,17 +134,25 @@ function securitySuccess(success) {
 }
 
 function uploadFile() {
+    
+}
+
+function uploadTextOnly() {
     if(constants.uploadedNotes.checkValidity()) {
         showOverlay();
         hideSubmitMessages();
         const text = constants.uploadedNotes.value;
         const callable = firebase.functions().httpsCallable('uploadFile');
-        callable({name: "", text: text}).then(function() {
-            submitSuccess("Uploaded Successfully!")
-            constants.uploadedNotes.value = "";
+        callable({name: "text-only", text: text}).then(function(result) {
+            if(result.data.success) {
+                submitSuccess(result.data.response);
+                constants.uploadedNotes.value = "";
+            }
+            else {
+                submitError(result.data.response);
+            }
             hideOverlay();
-            location.reload();
-        }).catch(error => {
+        }).catch(function(error) {
             submitError(error.message);
             hideOverlay();
         });
@@ -140,4 +174,23 @@ function submitError(success) {
     hide(constants.submitSuccess);
     show(constants.submitError);
     constants.submitError.innerText = success;
+}
+
+function toggle_content() {
+    if(isHidden(constants.formContent)) {
+        show(constants.formContent);
+        hide(constants.uploadContent);
+        constants.uploadCollapsibleText.innerText = "Upload Text";
+    }
+    else {
+        hide(constants.formContent);
+        show(constants.uploadContent);
+        constants.uploadCollapsibleText.innerText = "Upload File";
+    }
+}
+
+function submitFiles() {
+    if(constants.fileSubmitInput.checkValidity()) {
+        constants.fileSubmitInput.click();
+    }
 }
