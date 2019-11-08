@@ -40,6 +40,8 @@ document.addEventListener("DOMContentLoaded", function() {
     constants.fileLabel = document.getElementById('fileLabel');
     constants.fileText = document.getElementById('fileText');
     constants.fileSubmitInput = document.getElementById('fileSubmitInput');
+    constants.querySearch = document.getElementById('querySearch');
+    constants.queryText = document.getElementById('queryText');
 });
 let overlayTimeout;
 function showOverlay(hasTimer = true) {

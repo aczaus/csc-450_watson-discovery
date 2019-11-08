@@ -21,6 +21,26 @@ version: '2019-02-01',
 
 exports.app = functions.https.onRequest(expressApp.app);
 
+exports.queryDatabase = functions.https.onCall((data, context) => {
+    console.log("Query: " + data.query)
+    return global.discoveryClient.query({
+        environmentId: keys.environmentId,
+        collectionId: keys.collectionId,
+        configurationId: keys.configurationId,
+        naturalLanguageQuery: data.query,
+        count: 0,
+        passages: true,
+    })
+    .then(queryResponse => {
+        console.log(JSON.stringify(queryResponse));
+        return result.resolve(queryResponse.result);
+    })
+    .catch(error =>{
+        console.log(error);
+        return result.reject(error);
+    });
+});
+
 exports.uploadFile = functions.https.onCall((data, context) => {
     const name = data.name;
     const text = data.text;
