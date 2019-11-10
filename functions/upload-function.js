@@ -6,25 +6,25 @@ async function uploadFileToFirebaseAndIBM(file, uid) {
         const text = file.text;
         const timestamp = admin.firestore.Timestamp.now();
         const userRef = admin.firestore().collection("Users").doc(uid);
-        return userRefPromise(userRef, timestamp)
-        .then(data => {
-            return ibmPromise(text, data.counter);
-        })
-        .then(data => {
-            return firebasePromise(userRef, data.discover, data.counter, filename, timestamp);
-        })
-        .then(data => {
+        return admin.firestore().runTransaction(transaction => {
+            return userRefPromise(transaction, userRef,timestamp)
+            .then(data => {
+                return ibmPromise(data.transaction, text, data.counter);
+            })
+            .then(data => {
+                return firebasePromise(data.transaction, userRef, data.discover, data.counter, filename, timestamp);
+            });
+        }).then(data => {
             return resolve(data);
-        })
-        .catch(error => {
-            return reject(error)
-        })
-    })
+        }).catch(error => {
+            return reject(error);
+        });
+    });
 }
 
-async function userRefPromise(userRef, timestamp) {
+async function userRefPromise(transaction, userRef, timestamp) {
     return new Promise((resolve, reject) => {
-        userRef.get().then(doc => {
+        transaction.get(userRef).then(doc => {
             let counter = doc.get('uploadCounter') || 0;
             const lastUpload = doc.get('lastUpload') || new admin.firestore.Timestamp(0,0);
             const waitTime = 3600;
@@ -38,15 +38,16 @@ async function userRefPromise(userRef, timestamp) {
                 return reject(new Error("The amount of uploads for this account has exceeded the limit.  Try again in " + counterDate.getMinutes() + " minutes"));
             }
             else{
-                return resolve({counter: counter});
+                return resolve({transaction: transaction, counter: counter});
             }
-        }).catch(err => {
-            return reject(err.message);
+        }).catch(_ => {
+            console.log(_);
+            return reject(new Error("An error occured while retrieving data from Firebase"));
         });
     });
 }
 
-async function ibmPromise(text, counter) {
+async function ibmPromise(transaction, text, counter) {
     return new Promise((resolve, reject) => {
         global.discoveryClient.addDocument({
             environmentId: global.keys.environmentId, 
@@ -54,7 +55,7 @@ async function ibmPromise(text, counter) {
             file: text 
         })
         .then(discover => {
-            return resolve({discover: discover, counter: counter});
+            return resolve({transaction: transaction, discover: discover, counter: counter});
         })
         .catch(_ => {
             return reject(new Error("An error occured while adding files to IBM"));
@@ -62,17 +63,12 @@ async function ibmPromise(text, counter) {
     });
 }
 
-async function firebasePromise(userRef, discover, counter, filename, timestamp) {
+async function firebasePromise(transaction, userRef, discover, counter, filename, timestamp) {
     return new Promise((resolve, reject) => {
         const discoverId = discover.result.document_id;
-        const batch = admin.firestore().batch();
-        batch.set(userRef, {uploadCounter: counter + 1, lastUpload: timestamp}, {merge: true});
-        batch.set(userRef.collection("history").doc(), {discoveryId: discoverId, filename: filename, date: timestamp});
-        batch.commit().then(_ => {
-            return resolve("File Uploaded Successfully!");
-        }).catch(_ => {
-            return reject(new Error("An error occured while adding files to Firebase"));
-        });
+        transaction.set(userRef, {uploadCounter: counter + 1, lastUpload: timestamp}, {merge: true});
+        transaction.set(userRef.collection("history").doc(), {discoveryId: discoverId, filename: filename, date: timestamp});
+        return resolve("File Uploaded Successfully!");
     });
 }
 

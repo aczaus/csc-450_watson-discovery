@@ -120,8 +120,8 @@ async function getAllUploadFiles(promises) {
         .then(async files => {
             return resolve(files);
         })
-        .catch(err => {
-            return reject(err);
+        .catch(error => {
+            return reject(error);
         });
     })
 }

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Welcome to Firebase Hosting</title>
+        <title>Welcome To IBMCSA!</title>
         <link rel="stylesheet" type="text/css" href="/styles/index.css"/>
         <link rel="stylesheet" type="text/css" href="/styles/overlay.css"/>
         <script type="text/javascript" src="/__/firebase/7.2.1/firebase-app.js"></script>
@@ -45,10 +45,14 @@
                 </div>
             </div>
             <div class="content">
-                <div>Search: <input id="querySearch" type="search"></div>
-                <a class="signout" onclick="queryFirebase()">Search</a>
-                <div id="queryText" class="queryText">
-                    
+                <div class="chattingBox">
+                    <div class="chatWrapper">
+                        <div id="chatBox" class="chatBox"></div>
+                    </div>
+                    <form action="javascript:void(0)" onsubmit="queryFirebase()" class="chatForm">
+                        <input id="querySearch" class="chatMessage" type="search">
+                        <button id="querySearch" class="chatSubmit" type="submit">Send</button>
+                    </form>
                 </div>
             </div>
         </div>
