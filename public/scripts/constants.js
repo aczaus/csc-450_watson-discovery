@@ -1,5 +1,6 @@
 let overlayTimeout;
-function showOverlay(hasTimer = true) {
+function showOverlay(hasTimer) {
+    hasTimer = hasTimer || true
     if(hasTimer) {
         overlayTimeout = setTimeout(hideOverlay, 10000);
     }
