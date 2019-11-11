@@ -1,21 +1,21 @@
 function checkEmail() {
-    if(constants.newEmail.checkValidity()) {
-        constants.newEmailButton.removeAttribute('disabled');
+    if($('#newEmail')[0].checkValidity()) {
+        $('#newEmailButton').removeAttr('disabled');
     }
     else{
-        constants.newEmailButton.setAttribute('disabled', 'disabled');
+        $('#newEmailButton').attr('disabled', 'disabled');
     }
 }
 function updateEmail() {
-    if(constants.newEmail.checkValidity()) {
+    if($('#newEmail')[0].checkValidity()) {
         if(confirm("You will be logged out if your email is changed successfuly, do you want to continue?")) {
             const callable = firebase.functions().httpsCallable('updateEmail');
             hideProfileMessages();
             showOverlay();
-            callable({email: constants.newEmail.value}).then(function(result) {
+            callable({email: $('#newEmail').val()}).then(function(result) {
                 if(result.data.success) {
-                    constants.newEmail.value = '';
-                    constants.newDisplayNameButton.setAttribute('disabled', 'disabled');
+                    $('#newEmail').val('')
+                    $('#newDisplayNameButton').attr('disabled', 'disabled');
                     profileSuccess(result.data.response)
                     return firebase.auth().signOut().then(function() {
                         window.location = '/';
@@ -34,23 +34,23 @@ function updateEmail() {
 }
 
 function checkDisplayName() {
-    if(constants.newDisplayFirstName.checkValidity() && constants.newDisplayLastName.checkValidity()) {
-        constants.newDisplayNameButton.removeAttribute('disabled')
+    if($('#newDisplayFirstName')[0].checkValidity() && $('#newDisplayLastName')[0].checkValidity()) {
+        $('#newDisplayNameButton').removeAttr('disabled');
     }
     else {
-        constants.newDisplayNameButton.setAttribute('disabled', 'disabled');
+        $('#newDisplayNameButton').attr('disabled', 'disabled');
     }
 }
 function updateDisplayName() {
-    if(constants.newDisplayFirstName.checkValidity() && constants.newDisplayLastName.checkValidity()) {
+    if($('#newDisplayFirstName')[0].checkValidity() && $('#newDisplayLastName')[0].checkValidity()) {
         const update = firebase.functions().httpsCallable('updateName');
         hideProfileMessages();
         showOverlay();
-        update({firstName: constants.newDisplayFirstName.value, lastName: constants.newDisplayLastName.value}).then(function(result) {
+        update({firstName: $('#newDisplayFirstName').val(), lastName: $('#newDisplayLastName').val()}).then(function(result) {
             if(result.data.success) {
-                constants.newDisplayFirstName.value = '';
-                constants.newDisplayLastName.value = '';
-                constants.newDisplayNameButton.setAttribute('disabled', 'disabled');
+                $('#newDisplayFirstName').val('');
+                $('#newDisplayLastName').val('');
+                $('#newDisplayNameButton').attr('disabled', 'disabled');
                 profileSuccess(result.data.response);
                 location.reload();
             }
@@ -66,26 +66,26 @@ function updateDisplayName() {
 }
 
 function checkPassword() {
-    if(constants.newPassword.checkValidity() && constants.newConfirmPassword.checkValidity() && 
-    constants.newPassword.value === constants.newConfirmPassword.value && constants.newPassword.value.length >= 6) {
-        constants.newPasswordButton.removeAttribute('disabled')
+    if($('#newPassword')[0].checkValidity() && $('#newConfirmPassword')[0].checkValidity() && 
+    $('#newPassword').val() === $('#newConfirmPassword').val() && $('#newPassword').val().length >= 6) {
+        $('#newPasswordButton').removeAttr('disabled')
     }
     else {
-        constants.newPasswordButton.setAttribute('disabled', 'disabled');
+        $('#newPasswordButton').attr('disabled', 'disabled');
     }
 }
 function updatePassword() {
-    if(constants.newPassword.checkValidity() && constants.newConfirmPassword.checkValidity() && 
-    constants.newPassword.value === constants.newConfirmPassword.value && constants.newPassword.value.length >= 6) {
+    if($('#newPassword')[0].checkValidity() && $('#newConfirmPassword')[0].checkValidity() && 
+    $('#newPassword').val() === $('#newConfirmPassword').val() && $('#newPassword').val().length >= 6) {
         if(confirm("You will be logged out if your password is changed successfuly, do you want to continue?")) {
             const update = firebase.functions().httpsCallable('updatePassword');
             hideSecurityMessages();
             showOverlay();
-            update({password: constants.newPassword.value, confirm: constants.newConfirmPassword.value}).then(function(result) {
+            update({password: $('#newPassword').val(), confirm: $('#newConfirmPassword').val()}).then(function(result) {
                 if(result.data.success) {
-                    constants.newPassword.value = '';
-                    constants.newConfirmPassword.value = '';
-                    constants.newPasswordButton.setAttribute('disabled', 'disabled');
+                    $('#newPassword').val('');
+                    $('#newConfirmPassword').val('');
+                    $('#newPasswordButton').attr('disabled', 'disabled');
                     securitySuccess(result.data.response);
                     return firebase.auth().signOut().then(function() {
                         window.location = '/';
@@ -104,49 +104,45 @@ function updatePassword() {
 }
 
 function hideProfileMessages() {
-    hide(constants.profileError);
-    hide(constants.profileSuccess);
+    hide($('#profileError'));
+    hide($('#profileSuccess'));
 }
 
 function profileError(error) {
-    show(constants.profileError);
-    hide(constants.profileSuccess);
-    constants.profileError.innerText = error;
+    show($('#profileError'));
+    hide($('#profileSuccess'));
+    $('#profileError').text(error);
 }
 function profileSuccess(success) {
-    show(constants.profileSuccess);
-    hide(constants.profileError);
-    constants.profileSuccess.innerText = success;
+    show($('#profileSuccess'));
+    hide($('#profileError'));
+    $('#profileSuccess').text(success);
 }
 function hideSecurityMessages() {
-    hide(constants.securityError);
-    hide(constants.securitySuccess)
+    hide($('#securityError'));
+    hide($('#securitySuccess'))
 }
 function securityError(eror) {
-    show(constants.securityError);
-    hide(constants.securitySuccess);
-    constants.securityError.innerText = error;
+    show($('#securityError'));
+    hide($('#securitySuccess'));
+    $('#securityError').text(error);
 }
 function securitySuccess(success) {
-    show(constants.securitySuccess);
-    hide(constants.securityError);
-    constants.securitySuccess.innerText = success;
-}
-
-function uploadFile() {
-    
+    show($('#securitySuccess'));
+    hide($('#securityError'));
+    $('#securitySuccess').text(success);
 }
 
 function uploadTextOnly() {
-    if(constants.uploadedNotes.checkValidity()) {
+    if($('#uploadedNotes')[0].checkValidity()) {
         showOverlay();
         hideSubmitMessages();
-        const text = constants.uploadedNotes.value;
+        const text = $('#uploadedNotes').val();
         const callable = firebase.functions().httpsCallable('uploadFile');
         callable({name: "text-only", text: text}).then(function(result) {
             if(result.data.success) {
                 submitSuccess(result.data.response);
-                constants.uploadedNotes.value = "";
+                $('#uploadedNotes').val('');
             }
             else {
                 submitError(result.data.response);
@@ -160,37 +156,37 @@ function uploadTextOnly() {
 }
 
 function hideSubmitMessages() {
-    hide(constants.submitSuccess);
-    hide(constants.submitError);
+    hide($('#submitSuccess'));
+    hide($('#submitError'));
 }
 
 function submitSuccess(success) {
-    show(constants.submitSuccess);
-    hide(constants.submitError);
-    constants.submitSuccess.innerText = success;
+    show($('#submitSuccess'));
+    hide($('#submitError'));
+    $('#submitSuccess').text(success);
 }
 
 function submitError(success) {
-    hide(constants.submitSuccess);
-    show(constants.submitError);
-    constants.submitError.innerText = success;
+    hide($('#submitSuccess'));
+    show($('#submitError'));
+    $('#submitError').text(success);
 }
 
 function toggle_content() {
-    if(isHidden(constants.formContent)) {
-        show(constants.formContent);
-        hide(constants.uploadContent);
-        constants.uploadCollapsibleText.innerText = "Upload Text";
+    if(isHidden($('#formContent'))) {
+        show($('#formContent'));
+        hide($('#uploadContent'));
+        $('#uploadCollapsibleText').text("Upload Text");
     }
     else {
-        hide(constants.formContent);
-        show(constants.uploadContent);
-        constants.uploadCollapsibleText.innerText = "Upload File";
+        hide($('#formContent'));
+        show($('#uploadContent'));
+        $('#uploadCollapsibleText').text("Upload File");
     }
 }
 
 function submitFiles() {
-    if(constants.fileSubmitInput.checkValidity()) {
-        constants.fileSubmitInput.click();
+    if($('#fileSubmitInput')[0].checkValidity()) {
+        $('#fileSubmitInput')[0].click();
     }
 }

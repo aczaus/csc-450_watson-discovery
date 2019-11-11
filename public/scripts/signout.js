@@ -1,6 +1,6 @@
 function signOut() {
     showOverlay()
-    hide(constants.accountPanel);
+    hide($('#accountPanel'));
     firebase.auth().signOut()
     .then(function() {
         window.location = '/';

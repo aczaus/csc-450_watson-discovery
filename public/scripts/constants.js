@@ -1,69 +1,24 @@
-const constants = {};
-document.addEventListener("DOMContentLoaded", function() {
-    constants.loginBox = document.getElementById('loginBox');
-    constants.registerBox = document.getElementById('registerBox');
-    constants.registerButton = document.getElementById('registerSubmit');
-    constants.loginButton = document.getElementById('loginSubmit');
-    constants.loginEmail = document.getElementById('loginEmail');
-    constants.loginPassword = document.getElementById('loginPassword');
-    constants.firstName = document.getElementById('firstName');
-    constants.lastName = document.getElementById('lastName');
-    constants.registerEmail = document.getElementById('registerEmail');
-    constants.registerPassword = document.getElementById('registerPassword');
-    constants.confirmPassword = document.getElementById('confirmPassword');
-    constants.overlay = document.getElementById('overlay');
-    constants.loginError = document.getElementById('loginError');
-    constants.registerError = document.getElementById('registerError');
-    constants.accountPanel = document.getElementById('accountPanel');
-    constants.avatar = document.getElementById('avater');
-    constants.signin = document.getElementById('signin');
-    constants.newEmail = document.getElementById('newEmail');
-    constants.newEmailButton = document.getElementById('newEmailButton');
-    constants.newDisplayFirstName = document.getElementById('newDisplayFirstName');
-    constants.newDisplayLastName = document.getElementById('newDisplayLastName');
-    constants.newDisplayNameButton = document.getElementById('newDisplayNameButton');
-    constants.newPassword = document.getElementById('newPassword');
-    constants.newConfirmPassword = document.getElementById('newConfirmPassword');
-    constants.newPasswordButton = document.getElementById('newPasswordButton');
-    constants.profileError = document.getElementById('profileError');
-    constants.profileSuccess = document.getElementById('profileSuccess');
-    constants.securityError = document.getElementById('securityError');
-    constants.securitySuccess = document.getElementById('securitySuccess');
-    constants.uploadedNotes = document.getElementById('uploadedNotes');
-    constants.submitNotes = document.getElementById('submitNotes');
-    constants.submitSuccess = document.getElementById('submitSuccess');
-    constants.submitError = document.getElementById('submitError');
-    constants.formContent = document.getElementById('formContent');
-    constants.uploadContent = document.getElementById('uploadContent');
-    constants.uploadCollapsibleText = document.getElementById('uploadCollapsibleText');
-    constants.fileInput = document.getElementById('fileInput');
-    constants.fileLabel = document.getElementById('fileLabel');
-    constants.fileText = document.getElementById('fileText');
-    constants.fileSubmitInput = document.getElementById('fileSubmitInput');
-    constants.querySearch = document.getElementById('querySearch');
-    constants.queryText = document.getElementById('queryText');
-});
 let overlayTimeout;
 function showOverlay(hasTimer = true) {
     if(hasTimer) {
         overlayTimeout = setTimeout(hideOverlay, 10000);
     }
-    show(constants.overlay);
+    show($('#overlay'));
 }
 
 function hideOverlay() {
     clearTimeout(overlayTimeout);
-    hide(constants.overlay);
+    hide($('#overlay'));
 }
 
 function hide(element) {
-    element.classList.remove('show');
-    element.classList.add('hide');
+    element.removeClass('show');
+    element.addClass('hide');
 }
 
 function show(element) {
-    element.classList.remove('hide');
-    element.classList.add('show');
+    element.removeClass('hide');
+    element.addClass('show');
 }
 
 function toggle(element) {
@@ -76,9 +31,9 @@ function toggle(element) {
 }
 
 function isHidden(element) {
-    return element.classList.contains('hide');
+    return element.hasClass('hide');
 }
 
 function isShown(element) {
-    return element.classList.contains('show');
+    return element.hasClass('show');
 }

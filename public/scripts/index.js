@@ -1,10 +1,10 @@
 function toggleAccountPanel() {
-    toggle(constants.accountPanel);
+    toggle($('#accountPanel'));
 }
 
 function signOut() {
     showOverlay()
-    hide(constants.accountPanel);
+    hide($('#accountPanel'));
     firebase.auth().signOut()
     .then(function() {
         window.location = '/';
@@ -20,25 +20,25 @@ function queryFirebase() {
         return;
     }
     queryInProgress = true;
-    const query = constants.querySearch.value;
-    constants.querySearch.value = '';
-    const chatBox = document.getElementById('chatBox');
+    const query = $('#querySearch').val();
+    $('#querySearch').val('');
+    const chatBox = $('#chatBox');
     const user = createUserMessage(query);
-    chatBox.appendChild(user);
+    chatBox.append(user);
     const ibm = createIBMMessage('.');
-    chatBox.appendChild(ibm);
-    ibm.scrollIntoView(false);
+    chatBox.append(ibm);
+    ibm[0].scrollIntoView(false);
 
     const ibmInterval = setInterval(function() {
-        switch(ibm.innerText) {
+        switch(ibm.text()) {
             case '.':
-                ibm.innerText = '..'
+                ibm.text('..');
                 return;
             case '..':
-                ibm.innerText = '...'
+                ibm.text('...');
                 return;
             case '...':
-                ibm.innerText = '.'
+                ibm.text('.');
                 return;
         }
     }, 500);
@@ -54,30 +54,30 @@ function queryFirebase() {
             text = "No answer could be found, try rewording the question or ask another question.";
         }
         clearInterval(ibmInterval);
-        ibm.innerText = text;
+        ibm.text(text);
         queryInProgress = false;
-        ibm.scrollIntoView(false);
+        ibm[0].scrollIntoView(false);
     })
     .catch(function(_) {
         clearInterval(ibmInterval);
-        ibm.innerText = "An Error Occured Please Try again later";
+        ibm.text("An Error Occured Please Try again later");
         queryInProgress = false;
-        ibm.scrollIntoView(false);
+        ibm[0].scrollIntoView(false);
     });
 
 }
 
 
 function createUserMessage(message) {
-    const e = document.createElement('div');
-    e.className = 'userMessage';
-    e.innerText = message;
+    const e = $('<div/>');
+    e.addClass('userMessage');
+    e.text(message);
     return e;
 }
 
 function createIBMMessage(message) {
-    const e = document.createElement('div');
-    e.className = 'ibmMessage';
-    e.innerText = message;
+    const e = $('<div/>');
+    e.addClass('ibmMessage');
+    e.text(message);
     return e;
 }

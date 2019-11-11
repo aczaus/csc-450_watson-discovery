@@ -11,21 +11,21 @@ function signInWithGoogle() {
 
 function gotoRegister() {
     window.history.replaceState(null, "Register", "/signin?navigation=register");
-    hide(constants.loginBox);
-    show(constants.registerBox);
+    hide($('#loginBox'));
+    show($('#registerBox'));
 }
 
 function gotoSignin() {
     window.history.replaceState(null, "Login", "/signin?navigation=login");
-    show(constants.loginBox);
-    hide(constants.registerBox);
+    show($('#loginBox'));
+    hide($('#registerBox'));
 }
 
 function signin() {
-    const email =  constants.loginEmail.value;
-    const password = constants.loginPassword.value;
+    const email = $('#loginEmail').val();
+    const password = $('#loginPassword').val();
     showOverlay();
-    hide(constants.loginError);
+    hide($('#loginError'));
     firebaseLogin(email, password)
     .then(function(cred) {
         window.location = "/";
@@ -53,13 +53,13 @@ function firebaseLogin(email, password) {
 }
 
 function register() {
-    const firstName = constants.firstName.value;
-    const lastName = constants.lastName.value;
-    const email = constants.registerEmail.value;
-    const password = constants.registerPassword.value;
-    const confirm = constants.confirmPassword.value;
+    const firstName = $('#firstName').val();
+    const lastName = $('#lastName').val();
+    const email = $('#registerEmail').val();
+    const password = $('#registerPassword').val();
+    const confirm = $('#confirmPassword').val();
     showOverlay()
-    hide(constants.registerError);
+    hide($('#registerError'));
     const callable = firebase.functions().httpsCallable('registerUser');
     callable({email: email, password: password, confirm: confirm, firstName: firstName, lastName: lastName}).then(function(result) {
         if(result.data.success) {
@@ -83,14 +83,22 @@ function register() {
 }
 
 function showLoginError(message) {
-    showError(constants.loginError, message);
+    showError( $('#loginError'), message);
 }
 
 function showRegisterError(message) {
-    showError(constants.registerError, message);
+    showError($('#registerError'), message);
 }
 
 function showError(element, message) {
-    element.innerText = message;
+    element.text(message);
     show(element);
+}
+
+function onLogin() {
+    $('#loginSubmit').click();
+}
+
+function onRegister() {
+    $('#registerSubmit').click();
 }
