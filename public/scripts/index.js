@@ -1,3 +1,12 @@
+$(document).mouseup(function(e) 
+{
+    var container = $("#accountPanel");
+    if (isShown(container) && !container.is(e.target) && container.has(e.target).length === 0) 
+    {
+        hide(container);
+    }
+});
+
 function toggleAccountPanel() {
     toggle($('#accountPanel'));
 }
@@ -42,7 +51,6 @@ function queryFirebase() {
                 return;
         }
     }, 500);
-
     const callable = firebase.functions().httpsCallable('queryDatabase');
     callable({query: query})
     .then(function(result) {
@@ -58,7 +66,8 @@ function queryFirebase() {
         queryInProgress = false;
         ibm[0].scrollIntoView(false);
     })
-    .catch(function(_) {
+    .catch(function(error) {
+        console.log(error);
         clearInterval(ibmInterval);
         ibm.text("An Error Occured Please Try again later");
         queryInProgress = false;
