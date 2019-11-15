@@ -5,7 +5,6 @@ const firebaseUser = require('./user-request');
 const fileUpload = require('busboy-firebase')
 const Handlebars = require('handlebars');
 const seed = require("./seedrandom");
-const textract = require('textract');
 const uploadFunction = require('./upload-function');
 
 const app = express();
@@ -70,13 +69,7 @@ app.get('/account', async (req,res) =>{
 //FIX UP
 app.post('/account', fileUpload, async (req,res) => {
     if(req.user) {
-        return getAllFilePromises(req.files)
-        .then(promises => {
-            return getAllUploadFiles(promises);
-        })
-        .then(files => {
-            return getAllUploadPromises(files, req.user.uid);
-        })
+        return getAllUploadPromises(req.files, req.user.uid)
         .then(promises => {
             return getAllUploadResults(promises);
         })
@@ -93,44 +86,12 @@ app.post('/account', fileUpload, async (req,res) => {
 });
 //END FIX
 
-async function fromBufferWithName(name, buffer) {
-    return new Promise((resolve, reject) => {
-        textract.fromBufferWithName(name, buffer, (error, text) => {
-            if(error) { 
-                reject(error);
-            }
-            resolve({filename: name, text: text});
-        })
-    })
-}
-
-async function getAllFilePromises(files) {
-    return new Promise((resolve, reject) => {
-        promises = []
-        for (var i = 0; i < files.length; i++) {
-            promises.push(fromBufferWithName(files[i].originalname, files[i].buffer));
-        }
-        return resolve(promises);
-    });
-}
-
-async function getAllUploadFiles(promises) {
-    return new Promise((resolve, reject) => {
-        Promise.all(promises)
-        .then(async files => {
-            return resolve(files);
-        })
-        .catch(error => {
-            return reject(error);
-        });
-    })
-}
-
 async function getAllUploadPromises(files, uid) {
     return new Promise((resolve, reject) => {
         promises = []
         for(let i = 0; i < files.length; i++) {
-            promises.push(uploadFunction.uploadFileToFirebaseAndIBM(files[i], uid));
+            fileObject = {filename: files[i].originalname, file: files[i].buffer}
+            promises.push(uploadFunction.uploadFileToFirebaseAndIBM(fileObject, uid));
         }
         return resolve(promises);
     })
@@ -196,6 +157,7 @@ function getUserHistory(uid) {
         query.forEach(doc => {
             const filename = doc.data().filename || 'unknown';
             const date = doc.data().date.toDate();
+            console.log(date);
             const fData = {filename: filename, date: formatDate(date)};
             data.push(fData);
         });
@@ -211,7 +173,7 @@ function formatDate(date) {
     const day = date.getDate();
     const year = date.getFullYear();
     const hour = date.getHours() % 12;
-    const minute = date.getMinutes();
+    const minute = ('0' + date.getMinutes()).slice(-2);
     const zone = Math.floor(date.getHours() / 12) === 0 ? 'AM' : 'PM';
     return month + ' ' + day + ', ' + year + ' at ' + hour + ':' + minute + ' ' + zone;
 }

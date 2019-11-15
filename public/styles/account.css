@@ -409,15 +409,17 @@ div.dateElement {
 div.filename {
     font-size: 18px;
     align-self: center;
-    margin-left: auto;
-    padding-right: 10%;
+    margin-left: 10%;
+    margin-right: auto;
+    padding-right: 10px;
 }
 
 div.date {
     font-size: 18px;
     align-self: center;
-    margin-right: auto;
-    padding-left: 10%;
+    margin-right: 10%;
+    margin-left: auto;
+    padding-left: 10px;
 }
 
 div.dateElement.light {

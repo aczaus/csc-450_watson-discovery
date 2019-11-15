@@ -1,18 +1,16 @@
 const admin = require('firebase-admin');
 
-async function uploadFileToFirebaseAndIBM(file, uid) {
+async function uploadFileToFirebaseAndIBM(fileObject, uid) {
     return new Promise(async (resolve, reject) => {
-        const filename = file.filename;
-        const text = file.text;
         const timestamp = admin.firestore.Timestamp.now();
         const userRef = admin.firestore().collection("Users").doc(uid);
         return admin.firestore().runTransaction(transaction => {
             return userRefPromise(transaction, userRef,timestamp)
             .then(data => {
-                return ibmPromise(data.transaction, text, data.counter);
+                return ibmPromise(data.transaction, fileObject.file, data.counter);
             })
             .then(data => {
-                return firebasePromise(data.transaction, userRef, data.discover, data.counter, filename, timestamp);
+                return firebasePromise(data.transaction, userRef, data.discover, data.counter, fileObject.filename, timestamp);
             });
         }).then(data => {
             return resolve(data);
@@ -40,24 +38,26 @@ async function userRefPromise(transaction, userRef, timestamp) {
             else{
                 return resolve({transaction: transaction, counter: counter});
             }
-        }).catch(_ => {
-            console.log(_);
+        }).catch(error => {
+            console.error(error);
             return reject(new Error("An error occured while retrieving data from Firebase"));
         });
     });
 }
 
-async function ibmPromise(transaction, text, counter) {
+async function ibmPromise(transaction, file, counter) {
+    console.log(file);
     return new Promise((resolve, reject) => {
         global.discoveryClient.addDocument({
             environmentId: global.keys.environmentId, 
             collectionId: global.keys.collectionId, 
-            file: text 
+            file: file 
         })
         .then(discover => {
             return resolve({transaction: transaction, discover: discover, counter: counter});
         })
-        .catch(_ => {
+        .catch(error => {
+            console.error(error);
             return reject(new Error("An error occured while adding files to IBM"));
         });
     });

@@ -45,7 +45,7 @@ exports.uploadFile = functions.https.onCall((data, context) => {
     const name = data.name;
     const text = data.text;
     const uid = context.auth.uid;
-    return uploadFunction.uploadFileToFirebaseAndIBM({filename: name, text: text}, uid).then(response => {
+    return uploadFunction.uploadFileToFirebaseAndIBM({filename: name, file: text}, uid).then(response => {
         return result.resolve(response);
     }).catch(error => {
         return result.reject(error.message);
