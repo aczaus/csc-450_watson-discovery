@@ -21,6 +21,9 @@ version: '2019-02-01',
 
 exports.app = functions.https.onRequest(expressApp.app);
 
+/**
+ * Export Firebase Function to Query Database
+ */
 exports.queryDatabase = functions.https.onCall((data, context) => {
     console.log("Query: " + data.query)
     return global.discoveryClient.query({
@@ -41,6 +44,9 @@ exports.queryDatabase = functions.https.onCall((data, context) => {
     });
 });
 
+/**
+ * Export Firebase Function to Upload File
+ */
 exports.uploadFile = functions.https.onCall((data, context) => {
     const name = data.name;
     const text = data.text;
@@ -52,6 +58,9 @@ exports.uploadFile = functions.https.onCall((data, context) => {
     });
 });
 
+/**
+ * Export Firebase Function to Update Email
+ */
 exports.updateEmail = functions.https.onCall((data, context) => {
     const email = data.email;
 
@@ -65,6 +74,9 @@ exports.updateEmail = functions.https.onCall((data, context) => {
 
 });
 
+/**
+ * Export Firebase Function to Update Name
+ */
 exports.updateName = functions.https.onCall((data, context) => {
     const firstName = data.firstName;
     const lastName = data.lastName;
@@ -78,6 +90,9 @@ exports.updateName = functions.https.onCall((data, context) => {
     });
 });
 
+/**
+ * Export Firebase Function to Update Password
+ */
 exports.updatePassword = functions.https.onCall((data, context) => {
     if(data.password !== data.confirm) {
         return result.reject("Confirm your password");
@@ -91,6 +106,9 @@ exports.updatePassword = functions.https.onCall((data, context) => {
     });
 });
 
+/**
+ * Export Firebase Function to Register User
+ */
 exports.registerUser = functions.https.onCall((data, context) => {
     if(data.password !== data.confirm) {
         return result.reject("Confirm your password");

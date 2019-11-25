@@ -1,6 +1,12 @@
 const admin = require('firebase-admin');
 const cookieParser = require('cookie-parser')();
 
+/**
+ * Validation Method
+ * @param {Request} req Request Object
+ * @param {Response} res Response Object
+ * @param {Function} next Next Function
+ */
 async function validateFirebaseUser (req, res, next) {
     const uid = await getUidFromRequest(req, res);
     if (uid) {
@@ -9,6 +15,11 @@ async function validateFirebaseUser (req, res, next) {
     next();
 }
 
+/**
+ * Gets UID From Request
+ * @param {Request} req Request Object
+ * @param {Response} res Response Object
+ */
 function getUidFromRequest(req, res) {
     return new Promise((resolve, reject) => {
         cookieParser(req, res, () => {
@@ -20,7 +31,11 @@ function getUidFromRequest(req, res) {
         });
     });
 }
-
+/**
+ * Adds User to Request as req.user
+ * @param {String} uid UID of user
+ * @param {Request} req Request Object
+ */
 async function addUserToRequest(uid, req) {
     return admin.auth().getUser(uid).then(user => {
         req.user = user;

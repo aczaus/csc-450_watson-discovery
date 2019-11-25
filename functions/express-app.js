@@ -21,7 +21,9 @@ Handlebars.registerHelper('equals', (a, b, options) => {
 Handlebars.registerHelper('mod2', (value, options) => {
     return (value % 2 === 0) ? options.fn(options.data.root) : options.inverse(options.data.root);
 });
-
+/**
+ * Creates the GET handler for index
+ */
 app.get('/', (req,res) =>{
     if(req.user){
         res.render('index', 
@@ -44,6 +46,9 @@ app.get('/', (req,res) =>{
     }
 });
 
+/**
+ * Creates the GET handler for account
+ */
 app.get('/account', async (req,res) =>{
     const nav = ["home", "upload", "personal_information", "history", "settings"]
     const userNav = req.query.navigation;
@@ -66,7 +71,9 @@ app.get('/account', async (req,res) =>{
     }
 });
 
-//FIX UP
+/**
+ * Creates the POST handler for account
+ */
 app.post('/account', fileUpload, async (req,res) => {
     if(req.user) {
         return getAllUploadPromises(req.files, req.user.uid)
@@ -84,8 +91,12 @@ app.post('/account', fileUpload, async (req,res) => {
         return res.redirect('/');
     }
 });
-//END FIX
 
+/**
+ * Promise for Uploads
+ * @param {File[]} files List of Files for Upload
+ * @param {String} uid UID of User For Upload
+ */
 async function getAllUploadPromises(files, uid) {
     return new Promise((resolve, reject) => {
         promises = []
@@ -97,6 +108,10 @@ async function getAllUploadPromises(files, uid) {
     })
 }
 
+/**
+ * Receives a list of Promises for uploading
+ * @param {Promise[]} promises List of promises
+ */
 async function getAllUploadResults(promises) {
     return new Promise((resolve, reject) => {
         return Promise.all(promises)
@@ -109,6 +124,14 @@ async function getAllUploadResults(promises) {
     })
 }
 
+/**
+ * Renders the actual account page
+ * @param {Request} req Request Object
+ * @param {Response} res Response Object
+ * @param {String} navigation 
+ * @param {{filename:String, date:String}[]} history list of Objects with filename and date
+ * @param {String} alert Alert message if any
+ */
 function renderAccount(req, res, navigation, history, alert) {
     res.render('account', {
         layout: false,
@@ -124,7 +147,9 @@ function renderAccount(req, res, navigation, history, alert) {
     });
 }
 
-
+/**
+ * Creates the GET handler for signin
+ */
 app.get('/signin', (req,res) =>{
     const nav = ["login", "register"]
     const userNav = req.query.navigation;
@@ -141,6 +166,10 @@ app.get('/signin', (req,res) =>{
     }
 });
 
+/**
+ * Gets a random seeded color
+ * @param {Object} seed random seed
+ */
 function getRandomColor(seed) {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -150,7 +179,10 @@ function getRandomColor(seed) {
     }
     return color;
 }
-
+/**
+ * Gets a users history
+ * @param {String} uid users UID
+ */
 function getUserHistory(uid) {
     return admin.firestore().collection("Users").doc(uid).collection("history").orderBy("date", 'desc').get().then(query => {
         const data = [];
@@ -167,6 +199,10 @@ function getUserHistory(uid) {
     });
 }
 
+/**
+ * modifies the Date to a more readable format
+ * @param {Date} date The date
+ */
 function formatDate(date) {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const month = months[date.getMonth()];
@@ -178,6 +214,10 @@ function formatDate(date) {
     return month + ' ' + day + ', ' + year + ' at ' + hour + ':' + minute + ' ' + zone;
 }
 
+/**
+ * Checks if the server is currently being hosted on localhost
+ * @param {String} host ip address of server
+ */
 function isLocalHost(host) {
     return host === "localhost";
 }

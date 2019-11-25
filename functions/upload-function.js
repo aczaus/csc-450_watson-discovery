@@ -1,5 +1,10 @@
 const admin = require('firebase-admin');
 
+/**
+ * Allows for the upload of files to Firabse and IBM
+ * @param {{filename: String, file: Buffer}} fileObject Object with filename and buffer
+ * @param {String} uid users UID
+ */
 async function uploadFileToFirebaseAndIBM(fileObject, uid) {
     return new Promise(async (resolve, reject) => {
         const timestamp = admin.firestore.Timestamp.now();
@@ -20,6 +25,12 @@ async function uploadFileToFirebaseAndIBM(fileObject, uid) {
     });
 }
 
+/**
+ * Generates the Ref Promise 
+ * @param {Promise} transaction Transaction Promise from admin.firestore().runTransaction()
+ * @param {FirebaseFirestore.DocumentReference} userRef The firebase document that references user
+ * @param {firestore.Timestamp} timestamp The current timestamp that is to be inserted upon completion
+ */
 async function userRefPromise(transaction, userRef, timestamp) {
     return new Promise((resolve, reject) => {
         transaction.get(userRef).then(doc => {
@@ -45,6 +56,12 @@ async function userRefPromise(transaction, userRef, timestamp) {
     });
 }
 
+/**
+ * Generates the promise for IBM
+ * @param {Promise} transaction Transaction Promise from admin.firestore().runTransaction()
+ * @param {Buffer} file Buffer to be used for upload to IBM
+ * @param {Number} counter A Counter to be passed to the next Promise
+ */
 async function ibmPromise(transaction, file, counter) {
     console.log(file);
     return new Promise((resolve, reject) => {
@@ -63,6 +80,15 @@ async function ibmPromise(transaction, file, counter) {
     });
 }
 
+/**
+ * Generates the Firabse Promise
+ * @param {Promise} transaction Transaction Promise from admin.firestore().runTransaction()
+ * @param {FirebaseFirestore.DocumentReference} userRef The firebase document that references user
+ * @param {Promise<DiscoveryV1.Response<DiscoveryV1.DocumentAccepted>>} discover The Discovery Object returned from addDocument()
+ * @param {Number} counter The main Counter Number
+ * @param {String} filename Name of File to be Uploaded
+ * @param {firestore.Timestamp} timestamp The current timestamp that is to be inserted upon completion
+ */
 async function firebasePromise(transaction, userRef, discover, counter, filename, timestamp) {
     return new Promise((resolve, reject) => {
         const discoverId = discover.result.document_id;
