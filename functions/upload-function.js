@@ -81,7 +81,7 @@ async function ibmPromise(transaction, file, counter) {
 }
 
 /**
- * Generates the Firabse Promise
+ * Generates the Firbase Promise
  * @param {Promise} transaction Transaction Promise from admin.firestore().runTransaction()
  * @param {FirebaseFirestore.DocumentReference} userRef The firebase document that references user
  * @param {Promise<DiscoveryV1.Response<DiscoveryV1.DocumentAccepted>>} discover The Discovery Object returned from addDocument()
